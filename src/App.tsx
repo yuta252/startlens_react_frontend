@@ -1,58 +1,81 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect } from 'react';
+import styles from './App.module.css';
+import { Grid, Avatar } from "@material-ui/core";
+import {
+    makeStyles,
+    createMuiTheme,
+    MuiThemeProvider,
+    Theme,
+} from "@material-ui/core/styles";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PolymerIcon from "@material-ui/icons/Polymer";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+import { useSelector, useDispatch } from "react-redux";
+import {
+    selectLoginUser,
+} from "./features/auth/authSlice";
+
+
+import { AppDispatch } from './app/store';
+
+
+const theme = createMuiTheme({
+    palette: {
+        secondary: {
+            main: "#3cb371",
+        },
+    },
+});
+
+const useStyles = makeStyles((theme: Theme) => ({
+    icon: {
+        marginTop: theme.spacing(3),
+        cursor: "none",
+    },
+    avatar: {
+        marginLeft: theme.spacing(1),
+    },
+}));
+
+
+const App: React.FC = () => {
+    const dispatch: AppDispatch = useDispatch();
+    // const editedTask = useSelector(selectEditedTask);
+    // const loginUser = useSelector(selectLoginUser);
+    // const profiles = useSelector(selectProfiles);
+
+    // const loginProfile = profiles.filter(
+    //     (prof) => prof.user_profile === loginUser.id
+    // )[0];
+
+    // const Logout = () => {
+    //     localStorage.removeItem("localJWT")
+    //     window.location.href = "/";
+    // };
+
+    // const handlerEditPicture = () => {
+    //     const fileInput = document.getElementById("imageInput")
+    //     fileInput?.click();
+    // };
+
+    useEffect( () => {
+        const fetchBootLoader = async () => {
+            // await dispatch(fetchAsyncGetTasks());
+            // await dispatch(fetchAsyncGetMyProf());
+            // await dispatch(fetchAsyncGetUsers());
+            // await dispatch(fetchAsyncGetCategory());
+            // await dispatch(fetchAsyncGetProfs());
+        };
+        fetchBootLoader();
+    }, [dispatch]);
+
+    return (
+        <MuiThemeProvider theme={theme}>
+            <div className={styles.app__root}>
+            
+            </div>
+        </MuiThemeProvider>
+    );
 }
 
 export default App;
