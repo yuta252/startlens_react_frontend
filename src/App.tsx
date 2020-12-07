@@ -14,11 +14,24 @@ import { AppDispatch } from './app/store';
 import Router from './Router';
 
 import Header from './components/Header/Header';
+import SideNavigator from './components/SideNavigator/SideNavigator';
 
 
+const useStyles = makeStyles( (theme) => ({
+    root: {
+        display: 'flex'
+    },
+    appBarSpacer: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto'
+    }
+}));
 
 const App: React.FC = () => {
     const isSignedIn = useSelector(selectIsSignedIn)
+    const classes = useStyles();
     // const editedTask = useSelector(selectEditedTask);
     // const loginUser = useSelector(selectLoginUser);
     // const profiles = useSelector(selectProfiles);
@@ -44,12 +57,14 @@ const App: React.FC = () => {
     // }, [dispatch]);
 
     return (
-        <>
+        <div className={classes.root}>
             {isSignedIn && <Header />}
-            <main>
+            {isSignedIn && <SideNavigator />}
+            <main className={classes.content}>
+                <div className={classes.appBarSpacer} />
                 <Router />
             </main>
-        </>
+        </div>
     );
 }
 

@@ -11,6 +11,7 @@ import {
     USER,
     ERROR
 } from "../types";
+import { TramOutlined } from '@material-ui/icons';
 
 
 export const fetchAsyncLogin = createAsyncThunk(
@@ -122,7 +123,7 @@ const initialState: AUTH_STATE = {
         message: ""
     },
     isLoginView: true,
-    isSignedIn: false,
+    isSignedIn: true,
     isLoading: false,
     loginUser: {
         id: 0,

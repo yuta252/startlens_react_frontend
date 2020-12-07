@@ -2,6 +2,8 @@ import React from 'react';
 import { Grid, Avatar } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PolymerIcon from '@material-ui/icons/Polymer';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,18 +16,19 @@ import { push } from 'connected-react-router';
 import HeaderMenus from './HeaderMenus';
 
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    menuBar: {
+    appBar: {
         backgroundColor: "#fff",
-        color: "#444"
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
     },
     toolBar: {
-        margin: '0 auto',
-        maxWidth: 1024,
-        width: '100%'
+        paddingRight: 24,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
     },
     iconButtons: {
         margin: '0 0 0 auto'
@@ -35,19 +38,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Header: React.FC = () => {
     const classes = useStyles();
-    const dispatch: AppDispatch = useDispatch();
 
     return (
-        <div className={classes.root}>
-            <AppBar position="fixed" className={classes.menuBar}>
-                <img
-                    src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Logo" width="70px" onClick={ () => dispatch(push('/'))}
-                />
-                <div className={classes.iconButtons}>
-                    <HeaderMenus />
-                </div>
-            </AppBar>
-        </div>
+        <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar className={classes.toolBar}>
+                <IconButton>
+                    <ExitToAppIcon />
+                </IconButton>
+            </Toolbar>
+        </AppBar>
     )
 }
 
