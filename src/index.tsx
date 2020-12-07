@@ -5,19 +5,17 @@ import App from './App';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { Route, BrowserRouter } from "react-router-dom";
-import Auth from "./features/auth/Auth";
+import { BrowserRouter } from "react-router-dom";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { theme } from './assets/theme';
 
 
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <div>
-                <Route exact path="/" component={Auth} />
-                {/*
-                <Route exact path="/tasks" component={App} />
-                */}
-            </div>
+            <MuiThemeProvider theme={theme}>
+                <App />
+            </MuiThemeProvider>
         </BrowserRouter>
     </Provider>,
   document.getElementById('root')

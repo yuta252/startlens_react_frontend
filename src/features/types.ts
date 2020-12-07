@@ -1,3 +1,9 @@
+/* Common types */
+export interface ERROR {
+    isError: boolean;
+    message: string;
+}
+
 /* authSlice.ts */
 
 export interface CRED {
@@ -21,7 +27,10 @@ export interface LOGIN_USER {
 }
 
 export interface AUTH_STATE {
+    error: ERROR;
     isLoginView: boolean;
+    isSignedIn: boolean;
+    isLoading: boolean;
     loginUser: LOGIN_USER;
 }
 

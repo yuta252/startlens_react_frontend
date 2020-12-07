@@ -8,7 +8,8 @@ import {
     POST_PROFILE,
     PROFILE,
     JWT,
-    USER
+    USER,
+    ERROR
 } from "../types";
 
 
@@ -116,7 +117,13 @@ export const fetchAsyncUpdateProf = createAsyncThunk(
 */
 
 const initialState: AUTH_STATE = {
+    error: {
+        isError: false,
+        message: ""
+    },
     isLoginView: true,
+    isSignedIn: false,
+    isLoading: false,
     loginUser: {
         id: 0,
         email: "",
@@ -130,12 +137,23 @@ export const authSlice = createSlice({
         toggleMode(state) {
             state.isLoginView = !state.isLoginView;
         },
+        toggleSignIn(state) {
+            state.isSignedIn = !state.isSignedIn;
+        },
+        showError(state, action: PayloadAction<ERROR>) {
+            state.error = action.payload;
+        },
+        toggleLoading(state) {
+            state.isLoading = !state.isLoading;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(
             fetchAsyncLogin.fulfilled,
             (state, action: PayloadAction<JWT>) => {
+                state.isSignedIn = !state.isSignedIn
                 localStorage.setItem("localJWT", action.payload.token);
+                state.isLoading = !state.isLoading
                 action.payload.token && (window.location.href = "/");
             }
         );
@@ -173,10 +191,13 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode } = authSlice.actions;
+export const { toggleMode, toggleSignIn, showError, toggleLoading } = authSlice.actions;
 
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
+export const selectIsSignedIn = (state: RootState) => state.auth.isSignedIn;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
+export const selectError = (state: RootState) => state.auth.error;
+export const selectIsLoading = (state: RootState) => state.auth.isLoading;
 
 export default authSlice.reducer;
