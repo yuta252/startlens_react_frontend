@@ -123,7 +123,6 @@ const initialState: AUTH_STATE = {
         message: ""
     },
     isLoginView: true,
-    isSignedIn: true,
     isLoading: false,
     loginUser: {
         id: 0,
@@ -138,24 +137,21 @@ export const authSlice = createSlice({
         toggleMode(state) {
             state.isLoginView = !state.isLoginView;
         },
-        toggleSignIn(state) {
-            state.isSignedIn = !state.isSignedIn;
-        },
         showError(state, action: PayloadAction<ERROR>) {
             state.error = action.payload;
         },
         toggleLoading(state) {
             state.isLoading = !state.isLoading;
+        },
+        setLoginUser(state) {
+            state.loginUser = { id: 3, email: "info@startlens.com" }
         }
     },
     extraReducers: (builder) => {
         builder.addCase(
             fetchAsyncLogin.fulfilled,
             (state, action: PayloadAction<JWT>) => {
-                state.isSignedIn = !state.isSignedIn
                 localStorage.setItem("localJWT", action.payload.token);
-                state.isLoading = !state.isLoading
-                action.payload.token && (window.location.href = "/");
             }
         );
         /*
@@ -192,11 +188,10 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode, toggleSignIn, showError, toggleLoading } = authSlice.actions;
+export const { toggleMode, showError, toggleLoading, setLoginUser } = authSlice.actions;
 
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
-export const selectIsSignedIn = (state: RootState) => state.auth.isSignedIn;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 export const selectError = (state: RootState) => state.auth.error;
 export const selectIsLoading = (state: RootState) => state.auth.isLoading;

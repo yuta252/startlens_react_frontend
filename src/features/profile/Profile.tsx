@@ -1,24 +1,21 @@
 import React from 'react'
 
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { useDispatch } from "react-redux";
-import { toggleSignIn } from "../auth/authSlice";
 import { AppDispatch } from '../../app/store';
 
 const Profile: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
 
-    // TODO: ログアウトはHeaderで実装する
-    const Logout = () => {
-        localStorage.removeItem("localJWT");
-        dispatch(toggleSignIn());
-        window.location.href = "/";
-    };
-
     return (
-        <div>
-            <button onClick={() => Logout()}>ログアウト</button>
-            <p>プロフィールページ</p>
-        </div>
+        <Grid container>
+            <Grid item xs={12}>
+                <Paper>
+                    プロフィール
+                </Paper>
+            </Grid>
+        </Grid>
     )
 }
 

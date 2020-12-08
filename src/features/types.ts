@@ -29,7 +29,6 @@ export interface LOGIN_USER {
 export interface AUTH_STATE {
     error: ERROR;
     isLoginView: boolean;
-    isSignedIn: boolean;
     isLoading: boolean;
     loginUser: LOGIN_USER;
 }
