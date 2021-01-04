@@ -3,14 +3,12 @@ import React from 'react'
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { useDispatch } from "react-redux";
-import { setLoginUser } from "../auth/authSlice";
 import { AppDispatch } from '../../app/store';
 import Button from '@material-ui/core/Button';
 
 
 const Dashboard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    dispatch(setLoginUser());
 
     const getSiginIn = () => {
         window.location.href = '/signin';

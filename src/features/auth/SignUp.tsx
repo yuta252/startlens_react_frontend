@@ -84,9 +84,17 @@ const SignUp: React.FC = () => {
         // TODO: バリデーションエラーを画面に表示追加
         dispatch(toggleLoading());
         const result = await dispatch(fetchAsyncRegister({ email: credential.email, password: credential.password }));
-        // TODO: サーバーでのレスポンスエラー処理
+        // TODO: サーバーのバリデーションハンドリング
+        if (fetchAsyncRegister.rejected.match(result)) {
+            console.log(result)
+            dispatch(toggleLoading());
+            return false
+        }
         if (fetchAsyncRegister.fulfilled.match(result)) {
+            dispatch(toggleLoading());
             await dispatch(fetchAsyncLogin({ email: credential.email, password: credential.password }));
+            // TODO:　ホーム画面への直接遷移させるか検討
+            window.location.href = "/dashboard";
         }
     };
 

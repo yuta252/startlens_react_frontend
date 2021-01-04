@@ -1,0 +1,17 @@
+.basic_profile_th {
+    padding: 8px;
+    text-align: left;
+    min-width: 180px;
+}
+
+.basic_profile_td {
+    padding: 8px;
+    text-align: left;
+    min-width: 180px;
+}
+
+.basic_edit_btn_wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}

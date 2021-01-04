@@ -4,6 +4,12 @@ export interface ERROR {
     message: string;
 }
 
+export interface ERROR_RESPONSE {
+    errors: {
+        [key: string]: string[]
+    }
+}
+
 /* authSlice.ts */
 
 export interface CRED {
@@ -21,18 +27,44 @@ export interface JWT {
     email: string;
 }
 
+export interface PROFILE {
+    id: number;
+    userId: number;
+    majorCategory: number;
+    telephone: string;
+    companySite: string;
+    thumbnail: {
+        url: string;
+    }
+}
+
+export interface POST_PROFILE {
+    majorCategory: number;
+    telephone: string;
+    companySite: string;
+}
+
 export interface LOGIN_USER {
     id: number;
     email: string;
+    profile: PROFILE;
 }
 
 export interface AUTH_STATE {
     error: ERROR;
     isLoginView: boolean;
     isLoading: boolean;
+    isProfileEdited: boolean;
     loginUser: LOGIN_USER;
+    editedProfile: POST_PROFILE;
 }
 
+/* profileSlice */
+export interface PROFILE_STATE {
+    error: ERROR;
+    profile: PROFILE;
+    editedProfile: POST_PROFILE;
+}
 
 
 /* Unused */
@@ -44,13 +76,13 @@ export interface FILE extends Blob {
     readonly name: string;
 }
 
-export interface PROFILE {
-    id: number;
-    user_profile: number;
-    img: string | null;
-}
+// export interface PROFILE {
+//     id: number;
+//     user_profile: number;
+//     img: string | null;
+// }
 
-export interface POST_PROFILE {
+export interface POST_PROFILE_1 {
     id: number;
     img: File | null;
 }

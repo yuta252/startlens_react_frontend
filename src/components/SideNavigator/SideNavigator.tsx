@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar'
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -47,6 +47,14 @@ const useStyles = makeStyles( (theme) => ({
     },
 }));
 
+const StyledListItem = withStyles( (theme) => ({
+    selected: {
+        '& .MuiListItemIcon-root': {
+            color: theme.palette.primary.main
+        }
+    }
+}))(ListItem);
+
 
 const SideNavigator: React.FC = () => {
     const classes = useStyles();
@@ -76,7 +84,7 @@ const SideNavigator: React.FC = () => {
             <Divider />
             <List>
                 <NavLink exact to="/dashboard" className={classes.link}>
-                    <ListItem
+                    <StyledListItem
                         button
                         selected={selectedIndex === 0}
                         key={'Dashboard'}
@@ -84,10 +92,10 @@ const SideNavigator: React.FC = () => {
                     >
                         <ListItemIcon><DashboardIcon /></ListItemIcon>
                         <ListItemText primary={'ダッシュボード'} />
-                    </ListItem>
+                    </StyledListItem>
                 </NavLink>
                 <NavLink exact to="/exhibit" className={classes.link}>
-                    <ListItem 
+                    <StyledListItem 
                         button
                         selected={selectedIndex === 1}
                         key={'Image'}
@@ -95,10 +103,10 @@ const SideNavigator: React.FC = () => {
                     >
                         <ListItemIcon><CropOriginalIcon /></ListItemIcon>
                         <ListItemText primary={'画像アップロード'} />
-                    </ListItem>
+                    </StyledListItem>
                 </NavLink>
                 <NavLink exact to="/profile" className={classes.link}>
-                    <ListItem
+                    <StyledListItem
                         button
                         selected={selectedIndex === 2}
                         key={'Profile'}
@@ -106,7 +114,7 @@ const SideNavigator: React.FC = () => {
                     >
                         <ListItemIcon><PersonIcon /></ListItemIcon>
                         <ListItemText primary={'プロフィール'} />
-                    </ListItem>
+                    </StyledListItem>
                 </NavLink>
             </List>
 

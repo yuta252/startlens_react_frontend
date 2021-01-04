@@ -9,9 +9,9 @@ import {
     PROFILE,
     JWT,
     USER,
-    ERROR
+    ERROR,
+    ERROR_RESPONSE
 } from "../types";
-import { TramOutlined } from '@material-ui/icons';
 
 
 export const fetchAsyncLogin = createAsyncThunk(
@@ -33,7 +33,7 @@ export const fetchAsyncLogin = createAsyncThunk(
 export const fetchAsyncRegister = createAsyncThunk(
     "auth/register",
     async (auth: CRED) => {
-        const res = await axios.post<USER>(
+        const res = await axios.post<USER | ERROR_RESPONSE>(
             `${process.env.REACT_APP_API_URL}/api/v1/users`,
             { "user": auth },
             {
@@ -46,15 +46,14 @@ export const fetchAsyncRegister = createAsyncThunk(
     }
 );
 
-/*
-export const fetchAsyncGetMyProf = createAsyncThunk(
-    "auth/loginuser",
+export const fetchAsyncGetUserInfo = createAsyncThunk(
+    "auth/load",
     async () => {
-        const res = await axios.post<LOGIN_USER>(
-            `${process.env.REACT_APP_API_URL}/api/loginuser/`,
+        const res = await axios.get<LOGIN_USER>(
+            `${process.env.REACT_APP_API_URL}/api/v1/load`,
             {
                 headers: {
-                    Authorization: `JWT ${localStorage.localJWT}`,
+                    Authorization: `${localStorage.localJWT}`,
                 },
             }
         );
@@ -62,7 +61,24 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
     }
 );
 
+export const fetchAsyncUpdateProfile = createAsyncThunk(
+    "profile/updateProfile",
+    async (profile: POST_PROFILE) => {
+        const res = await axios.patch<PROFILE>(
+            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
+            { "profile": profile },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${localStorage.localJWT}`,
+                },
+            }
+        );
+        return res.data
+    }
+);
 
+/*
 export const fetchAsyncCrateMyProf = createAsyncThunk(
     "auth/createProfile",
     async () => {
@@ -124,10 +140,26 @@ const initialState: AUTH_STATE = {
     },
     isLoginView: true,
     isLoading: false,
+    isProfileEdited: false,
     loginUser: {
         id: 0,
         email: "",
+        profile: {
+            id: 0,
+            userId: 0,
+            majorCategory: 0,
+            telephone: "",
+            companySite: "",
+            thumbnail: {
+                url: "",
+            }
+        },
     },
+    editedProfile: {
+        majorCategory: 0,
+        telephone: "",
+        companySite: "",
+    }
 };
 
 export const authSlice = createSlice({
@@ -143,15 +175,47 @@ export const authSlice = createSlice({
         toggleLoading(state) {
             state.isLoading = !state.isLoading;
         },
-        setLoginUser(state) {
-            state.loginUser = { id: 3, email: "info@startlens.com" }
-        }
+        toggleProfileEdit(state) {
+            state.isProfileEdited = !state.isProfileEdited;
+        },
+        editProfile(state, action: PayloadAction<POST_PROFILE>) {
+            state.editedProfile = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(
             fetchAsyncLogin.fulfilled,
             (state, action: PayloadAction<JWT>) => {
                 localStorage.setItem("localJWT", action.payload.token);
+            }
+        );
+        builder.addCase(
+            fetchAsyncGetUserInfo.fulfilled,
+            (state, action: PayloadAction<LOGIN_USER>) => {
+                return {
+                    ...state,
+                    loginUser: action.payload,
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncRegister.rejected,
+            (state) => {
+                return {
+                    ...state, error: { isError: true, message: "メールアドレスもしくはパスワードに誤りがあります。" }
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncUpdateProfile.fulfilled,
+            (state, action: PayloadAction<PROFILE>) => {
+                return {
+                    ...state,
+                    loginUser: {
+                        ...state.loginUser,
+                        profile: action.payload
+                    }
+                }
             }
         );
         /*
@@ -188,12 +252,13 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode, showError, toggleLoading, setLoginUser } = authSlice.actions;
-
+export const { toggleMode, showError, toggleLoading, toggleProfileEdit, editProfile } = authSlice.actions;
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
+export const selectedEditedProfile = (state: RootState) => state.auth.editedProfile;
 export const selectError = (state: RootState) => state.auth.error;
 export const selectIsLoading = (state: RootState) => state.auth.isLoading;
+export const selectIsProfileEdited = (state: RootState) => state.auth.isProfileEdited;
 
 export default authSlice.reducer;
