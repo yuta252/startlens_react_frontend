@@ -66,6 +66,7 @@ const ProfileDisplay: React.FC = () => {
                     color="primary"
                     className={classes.editButton}
                     onClick={editProfileAction}
+                    disableElevation
                 >
                     プロフィール編集
                 </Button>

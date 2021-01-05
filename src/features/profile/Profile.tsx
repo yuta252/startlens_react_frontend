@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Avatar, Link } from "@material-ui/core";
+import { makeStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import { TextField, Button, Avatar, Link, Dialog, createStyles } from "@material-ui/core";
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
@@ -9,8 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from '../../app/store';
 import { Typography } from '@material-ui/core';
 
-import styles from './Profile.module.css';
-import { selectLoginUser, selectIsProfileEdited } from '../auth/authSlice';
+import { selectLoginUser, selectIsProfileEdited, selectEditedThumbnailImage, selectEditedProfileError, editThumbnailImage, fetchAsyncUpdateThumbnail } from '../auth/authSlice';
+import customStyles from './Profile.module.css';
 import ProfileDisplay from './ProfileDisplay';
 import ProfileEdit from './ProfileEdit';
 
@@ -35,16 +40,69 @@ const useStyles = makeStyles( (theme: Theme) => ({
     avatar: {
         margin: theme.spacing(2),
         backgroundColor: theme.palette.primary.main,
-        width: theme.spacing(12),
-        height: theme.spacing(12),
+        width: '200px',
+        height: '200px',
     },
-    editButton: {
-        width: "150px",
+    editPictureButton: {
+        width: "80px",
         padding: theme.spacing(1),
         color: "white",
         fontWeight: theme.typography.fontWeightBold,
     },
+    uploadedAvatar: {
+        margin: theme.spacing(2),
+        backgroundColor: theme.palette.grey[500],
+        width: '300px',
+        height: '300px',
+    },
 }));
+
+const styles = (theme: Theme) =>
+    createStyles({
+        root: {
+            margin: 0,
+            padding: theme.spacing(2),
+        },
+        closeButton: {
+            position: 'absolute',
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            color: theme.palette.grey[500],
+        }
+    });
+
+export interface DialogTitleProps extends WithStyles<typeof styles> {
+    id: string;
+    children: React.ReactNode;
+    onClose: () => void;
+}
+
+const DialogTitle = withStyles(styles)( (props: DialogTitleProps) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+        <MuiDialogTitle disableTypography className={classes.root} {...other}>
+            <Typography variant="h6">{children}</Typography>
+            {onClose ? (
+                <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </MuiDialogTitle>
+    );
+});
+
+const DialogContent = withStyles((theme: Theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme: Theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(1),
+    },
+}))(MuiDialogActions);
 
 
 const Profile: React.FC = () => {
@@ -52,8 +110,86 @@ const Profile: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const loginUser = useSelector(selectLoginUser);
     const isProfileEdited = useSelector(selectIsProfileEdited);
+    const editedThumbnailImage = useSelector(selectEditedThumbnailImage);
 
-    
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    const handleEditThumbnail = () => {
+        const fileInput = document.getElementById("imageInput")
+        fileInput?.click();
+    };
+
+    const handleUploadThumbnail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const THUMBNAIL_WIDTH = 500;
+        const THUMBNAIL_HEIGHT = 500;
+
+        console.log(e.target.files![0]);
+        console.log(e.target.files![0].name);
+        console.log(e.target.files![0].type);
+        const file: File = e.target.files![0];
+        // validation: jpg and png format is permitted to upload as an image
+        if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+            console.log("validation failed")
+            return false;
+        }
+        // resize a image
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            console.log("reader onload")
+            const image = new Image();
+            image.onload = () => {
+                console.log("image onload")
+                let width = image.width;
+                let height = image.height;
+                if (width > height) {
+                    // the length of width is longer than the one of height, adjust to the length of height
+                    width = THUMBNAIL_WIDTH;
+                    height = Math.round(THUMBNAIL_WIDTH * height / width);
+                } else {
+                    width = Math.round(THUMBNAIL_HEIGHT * width / height );
+                    height = THUMBNAIL_HEIGHT;
+                }
+                console.log("hight: ", height)
+                console.log("width: ", width)
+                let canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                let ctx = canvas.getContext('2d');
+                ctx?.drawImage(image, 0, 0, width, height);
+                const encodedImage = ctx?.canvas.toDataURL(file.type) as string;
+                console.log("encodedImage: ", encodedImage)
+                dispatch(editThumbnailImage({ imageFile: encodedImage }))
+            }
+            image.src = e.target?.result as string;
+        }
+        reader.onerror = (error) => {
+            console.log("error: cannot read any files");
+        }
+    };
+
+    const handleSaveThumbnail = async (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        const result = await dispatch(fetchAsyncUpdateThumbnail(editedThumbnailImage));
+        if (fetchAsyncUpdateThumbnail.rejected.match(result)) {
+            // TODO: エラーハンドリング
+            console.log(result)
+            return false
+        }
+        if (fetchAsyncUpdateThumbnail.fulfilled.match(result)) {
+            // TODO: editedThumbnailImageを空にする
+            console.log("thumbnail url: ", result)
+            handleClose();
+        }
+    }
 
     return (
         <Grid container spacing={1}>
@@ -74,9 +210,48 @@ const Profile: React.FC = () => {
                         <Grid container item>
                             <Grid item md={4} className={classes.avatarContainer}>
                                 { loginUser.profile.thumbnail.url ?
-                                    (<Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />)
+                                    (<Avatar variant="rounded" src={process.env.REACT_APP_API_URL + loginUser.profile.thumbnail.url} className={classes.avatar} alt="logo" />)
                                     : (<Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />) 
                                 }
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleOpen}
+                                    className={classes.editPictureButton}
+                                    disableElevation
+                                >
+                                    編集
+                                </Button>
+                                <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+                                    <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+                                        画像を編集する
+                                    </DialogTitle>
+                                    <DialogContent dividers>
+                                        <Typography gutterBottom>
+                                            ファイルのサイズが1Mより小さいjpg/jpeg, png画像ファイルを選び、アップロードしてください。
+                                        </Typography>
+                                        <div className={customStyles.thumbnail_edit_wrapper}>
+                                            {editedThumbnailImage.imageFile ?
+                                                <Avatar variant="rounded" src={editedThumbnailImage.imageFile} className={classes.uploadedAvatar} alt="logo" /> :
+                                                <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.uploadedAvatar} alt="logo" />
+                                            }
+                                        </div>
+                                        <input
+                                            type="file"
+                                            id="imageInput"
+                                            hidden={true}
+                                            onChange={handleUploadThumbnail}
+                                        />
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button autoFocus onClick={handleEditThumbnail} color="primary">
+                                            アップロード
+                                        </Button>
+                                        <Button onClick={handleSaveThumbnail} color="primary">
+                                            保存
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </Grid>
                             <Grid item md={8}>
                                 {isProfileEdited ? <ProfileEdit /> : <ProfileDisplay />}

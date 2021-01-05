@@ -10,7 +10,8 @@ import {
     JWT,
     USER,
     ERROR,
-    ERROR_RESPONSE
+    ERROR_RESPONSE,
+    THUMBNAIL_BASE64
 } from "../types";
 
 
@@ -67,6 +68,23 @@ export const fetchAsyncUpdateProfile = createAsyncThunk(
         const res = await axios.patch<PROFILE>(
             `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
             { "profile": profile },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${localStorage.localJWT}`,
+                },
+            }
+        );
+        return res.data
+    }
+);
+
+export const fetchAsyncUpdateThumbnail = createAsyncThunk(
+    "profile/updateThumbnail",
+    async (thumbnail: THUMBNAIL_BASE64) => {
+        const res = await axios.patch<PROFILE>(
+            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
+            { "profile": thumbnail },
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -159,6 +177,17 @@ const initialState: AUTH_STATE = {
         majorCategory: 0,
         telephone: "",
         companySite: "",
+    },
+    editedProfileError: {
+        isError: false,
+        message: ""
+    },
+    editedThumbnailImage: {
+        imageFile: ""
+    },
+    editedThumbnailError: {
+        isError: false,
+        message: ""
     }
 };
 
@@ -181,6 +210,9 @@ export const authSlice = createSlice({
         editProfile(state, action: PayloadAction<POST_PROFILE>) {
             state.editedProfile = action.payload;
         },
+        editThumbnailImage(state, action: PayloadAction<THUMBNAIL_BASE64>) {
+            state.editedThumbnailImage = action.payload;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(
@@ -208,6 +240,18 @@ export const authSlice = createSlice({
         );
         builder.addCase(
             fetchAsyncUpdateProfile.fulfilled,
+            (state, action: PayloadAction<PROFILE>) => {
+                return {
+                    ...state,
+                    loginUser: {
+                        ...state.loginUser,
+                        profile: action.payload
+                    }
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncUpdateThumbnail.fulfilled,
             (state, action: PayloadAction<PROFILE>) => {
                 return {
                     ...state,
@@ -252,11 +296,14 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode, showError, toggleLoading, toggleProfileEdit, editProfile } = authSlice.actions;
+export const { toggleMode, showError, toggleLoading, toggleProfileEdit, editProfile, editThumbnailImage } = authSlice.actions;
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
-export const selectedEditedProfile = (state: RootState) => state.auth.editedProfile;
+export const selectEditedProfile = (state: RootState) => state.auth.editedProfile;
+export const selectEditedProfileError = (state: RootState) => state.auth.editedProfileError;
+export const selectEditedThumbnailImage = (state: RootState) => state.auth.editedThumbnailImage;
+export const selectEditedThumbnailError = (state: RootState) => state.auth.editedThumbnailError;
 export const selectError = (state: RootState) => state.auth.error;
 export const selectIsLoading = (state: RootState) => state.auth.isLoading;
 export const selectIsProfileEdited = (state: RootState) => state.auth.isProfileEdited;

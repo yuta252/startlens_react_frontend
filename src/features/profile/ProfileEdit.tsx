@@ -7,7 +7,7 @@ import styles from './Profile.module.css';
 import commonStyles from '../../assets/Style.module.css';
 import { majorCategoryObj } from '../../app/constant';
 import { AppDispatch } from '../../app/store';
-import { selectedEditedProfile } from '../auth/authSlice';
+import { selectEditedProfile } from '../auth/authSlice';
 import { editProfile, toggleProfileEdit, fetchAsyncUpdateProfile } from "../auth/authSlice";
 import { POST_PROFILE } from '../types';
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles( (theme: Theme) => ({
 const ProfileEdit: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
-    const editedProfile = useSelector(selectedEditedProfile);
+    const editedProfile = useSelector(selectEditedProfile);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -101,6 +101,7 @@ const ProfileEdit: React.FC = () => {
                     color="primary"
                     className={classes.editButton}
                     onClick={saveProfileAction}
+                    disableElevation
                 >
                     保存
                 </Button>
