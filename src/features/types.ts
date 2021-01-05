@@ -70,6 +70,7 @@ export interface AUTH_STATE {
 export interface READ_MULTI_PROFILE {
     id: number;
     userId: number;
+    lang: string;
     username: string;
     selfIntro: string;
     addressPrefecture: string;
@@ -84,6 +85,7 @@ export interface READ_MULTI_PROFILE {
 export interface POST_MULTI_PROFILE {
     id: number;
     username: string;
+    lang: string;
     selfIntro: string;
     addressPrefecture: string;
     addressCity: string;
@@ -97,7 +99,8 @@ export interface POST_MULTI_PROFILE {
 
 export interface PROFILE_STATE {
     error: ERROR;
+    isDisplayed: boolean;
     multiProfiles: READ_MULTI_PROFILE[];
-    editedMultiProfiles: POST_MULTI_PROFILE;
-    selectedMultiProfiles: READ_MULTI_PROFILE;
+    editedMultiProfile: POST_MULTI_PROFILE;
+    selectedMultiProfile: READ_MULTI_PROFILE;
 }

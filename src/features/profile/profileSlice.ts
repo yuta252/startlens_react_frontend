@@ -9,12 +9,30 @@ import {
 } from "../types";
 
 
+export const fetchAsyncGetMultiProfile = createAsyncThunk(
+    "profile/getMultiProfile",
+    async () => {
+        const res = await axios.get<READ_MULTI_PROFILE[]>(
+            `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles`,
+            {
+                headers: {
+                    Authorization: `${localStorage.localJWT}`,
+                },
+            }
+        );
+        return res.data;
+    }
+);
+
 export const fetchAsyncCreateMultiProfile = createAsyncThunk(
     "profile/createMultiProfile",
     async (multiProfile: POST_MULTI_PROFILE) => {
+        // remove id property to prevent dupulicate registration
+        const {id, ...multiProfileSent} = multiProfile
+        console.log("multiProfile sent: ", multiProfileSent)
         const res = await axios.post<READ_MULTI_PROFILE>(
-            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
-            { multi_profile: multiProfile },
+            `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles`,
+            { "multi_profile": multiProfileSent },
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -30,8 +48,8 @@ export const fetchAsyncUpdateMultiProfile = createAsyncThunk(
     "profile/updateMultiProfile",
     async (multiProfile: POST_MULTI_PROFILE) => {
         const res = await axios.patch<READ_MULTI_PROFILE>(
-            `${process.env.REACT_APP_API_URL}/api/v1/profiles/${multiProfile.id}`,
-            { multi_profile: multiProfile },
+            `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles/${multiProfile.id}`,
+            { "multi_profile": multiProfile },
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -47,7 +65,7 @@ export const fetchAsyncDeleteMultiProfile = createAsyncThunk(
     "profile/deleteMultiProfile",
     async (id: number) => {
         await axios.delete(
-            `${process.env.REACT_APP_API_URL}/api/v1/profiles/${id}`,{
+            `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles/${id}`,{
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `${localStorage.localJWT}`,
@@ -59,15 +77,17 @@ export const fetchAsyncDeleteMultiProfile = createAsyncThunk(
 );
 
 
-const initialState: PROFILE_STATE = {
+export const initialState: PROFILE_STATE = {
     error: {
         isError: false,
         message: ""
     },
+    isDisplayed: true,
     multiProfiles: [
         {
             id: 0,
             userId: 0,
+            lang: "",
             username: "",
             selfIntro: "",
             addressPrefecture: "",
@@ -79,8 +99,9 @@ const initialState: PROFILE_STATE = {
             translated: 0
         },
     ],
-    editedMultiProfiles: {
+    editedMultiProfile: {
         id: 0,
+        lang: "",
         username: "",
         selfIntro: "",
         addressPrefecture: "",
@@ -91,9 +112,10 @@ const initialState: PROFILE_STATE = {
         holiday: "",
         translated: 0
     },
-    selectedMultiProfiles: {
+    selectedMultiProfile: {
         id: 0,
         userId: 0,
+        lang: "",
         username: "",
         selfIntro: "",
         addressPrefecture: "",
@@ -111,20 +133,32 @@ export const profileSlice = createSlice({
     initialState,
     reducers: {
         editMultiProfile(state, action: PayloadAction<POST_MULTI_PROFILE>) {
-            state.editedMultiProfiles = action.payload;
+            state.editedMultiProfile = action.payload;
         },
-        selectedMultiProfile(state, action: PayloadAction<READ_MULTI_PROFILE>) {
-            state.selectedMultiProfiles = action.payload;
+        selectMultiProfile(state, action: PayloadAction<READ_MULTI_PROFILE>) {
+            state.selectedMultiProfile = action.payload;
+        },
+        handleDisplayStatus(state, action: PayloadAction<boolean>){
+            state.isDisplayed = action.payload;
         },
     },
     extraReducers: (builder) => {
+        builder.addCase(
+            fetchAsyncGetMultiProfile.fulfilled,
+            (state, action: PayloadAction<READ_MULTI_PROFILE[]>) => {
+                return {
+                    ...state,
+                    multiProfiles: action.payload,
+                };
+            }
+        );
         builder.addCase(
             fetchAsyncCreateMultiProfile.fulfilled,
             (state, action: PayloadAction<READ_MULTI_PROFILE>) => {
                 return {
                     ...state,
                     multiProfiles: [action.payload, ...state.multiProfiles],
-                    editedProfiles: initialState.editedMultiProfiles
+                    editedProfiles: initialState.editedMultiProfile
                 }
             }
         );
@@ -136,8 +170,8 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.map( (multiProfile) =>
                         multiProfile.id === action.payload.id ? action.payload : multiProfile
                     ),
-                    editedProfiles: initialState.editedMultiProfiles,
-                    selectedProfiles: initialState.selectedMultiProfiles,
+                    editedProfiles: initialState.editedMultiProfile,
+                    selectedProfiles: action.payload,
                 }
             }
         );
@@ -149,19 +183,20 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.filter( (multiProfile) =>
                         multiProfile.id !== action.payload
                     ),
-                    editedProfiles: initialState.editedMultiProfiles,
-                    selectedProfiles: initialState.selectedMultiProfiles,
+                    editedProfiles: initialState.editedMultiProfile,
+                    selectedProfiles: initialState.selectedMultiProfile,
                 }
             }
         );
     },
 });
 
-export const { editMultiProfile, selectedMultiProfile } = profileSlice.actions;
+export const { editMultiProfile, selectMultiProfile, handleDisplayStatus } = profileSlice.actions;
 
-export const selectMultiProfile = (state: RootState) => state.profile.multiProfiles;
-export const selectEditedMultiProfile = (state: RootState) => state.profile.editedMultiProfiles;
-export const selectSelectedMultiProfile = (state: RootState) => state.profile.selectedMultiProfiles;
+export const selectMultiProfiles = (state: RootState) => state.profile.multiProfiles;
+export const selectEditedMultiProfile = (state: RootState) => state.profile.editedMultiProfile;
+export const selectSelectedMultiProfile = (state: RootState) => state.profile.selectedMultiProfile;
 export const selectMultiProfileError = (state: RootState) => state.profile.error;
+export const selectIsDisplayed = (state: RootState) => state.profile.isDisplayed;
 
 export default profileSlice.reducer;

@@ -15,7 +15,6 @@ import { POST_PROFILE } from '../types';
 const useStyles = makeStyles( (theme: Theme) => ({
     editButton: {
         width: "150px",
-        padding: theme.spacing(1),
         color: "white",
         fontWeight: theme.typography.fontWeightBold,
     },
@@ -66,6 +65,7 @@ const ProfileDisplay: React.FC = () => {
                     color="primary"
                     className={classes.editButton}
                     onClick={editProfileAction}
+                    size="small"
                     disableElevation
                 >
                     プロフィール編集

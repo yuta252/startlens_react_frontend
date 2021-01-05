@@ -25,3 +25,11 @@ export const majorCategoryObj: {[key:number] : string} = {
     33: "食",
     34: "芸能・イベント"
 };
+
+export const langCategoryObj: {[key: string]: string} = {
+    "ja": "日本語",
+    "en": "英語",
+    "zh-CN": "中国語（簡体字）",
+    "zh-TW": "中国語（繁体字）",
+    "ko": "韓国語"
+}
