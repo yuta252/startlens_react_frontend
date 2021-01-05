@@ -3,6 +3,7 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from "@material-ui/core/styles";
 
 import { fetchAsyncGetUserInfo } from './features/auth/authSlice';
+import { fetchAsyncGetMultiProfile } from './features/profile/profileSlice';
 
 import { AppDispatch } from './app/store';
 import Router from './Router';
@@ -41,7 +42,10 @@ const App: React.FC = () => {
                 if (fetchAsyncGetUserInfo.rejected.match(result)) {
                     return null;
                 }
-                // TODO: ログインユーザー情報を利用した初期読み込み処理
+                if (fetchAsyncGetUserInfo.fulfilled.match(result)) {
+                    // load other data after user login info is loaded once
+                    await dispatch(fetchAsyncGetMultiProfile());
+                }
             }
         };
         fetchBootLoader();

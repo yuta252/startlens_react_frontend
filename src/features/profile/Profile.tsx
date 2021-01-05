@@ -15,11 +15,12 @@ import { AppDispatch } from '../../app/store';
 import { Typography } from '@material-ui/core';
 
 import { selectLoginUser, selectIsProfileEdited, selectEditedThumbnailImage, selectEditedProfileError, editThumbnailImage, fetchAsyncUpdateThumbnail } from '../auth/authSlice';
-import { selectMultiProfiles, selectEditedMultiProfile, selectSelectedMultiProfile, selectMultiProfileError } from './profileSlice';
+import { selectMultiProfiles, selectEditedMultiProfile, selectSelectedMultiProfile, selectMultiProfileError, handleDisplayStatus, selectIsDisplayed } from './profileSlice';
 import MultiProfileList from './MultiProfileList';
 import MultiProfileDisplay from './MultiProfileDisplay';
 import MultiProfileEdit from './MultiProfileEdit';
 import customStyles from './Profile.module.css';
+import commonStyles from '../../assets/Style.module.css';
 import ProfileDisplay from './ProfileDisplay';
 import ProfileEdit from './ProfileEdit';
 
@@ -49,7 +50,6 @@ const useStyles = makeStyles( (theme: Theme) => ({
     },
     editPictureButton: {
         width: "80px",
-        padding: theme.spacing(1),
         color: "white",
         fontWeight: theme.typography.fontWeightBold,
     },
@@ -116,6 +116,7 @@ const Profile: React.FC = () => {
     const isProfileEdited = useSelector(selectIsProfileEdited);
     const editedThumbnailImage = useSelector(selectEditedThumbnailImage);
     const editedMultiProfile = useSelector(selectEditedMultiProfile);
+    const isDisplayed = useSelector(selectIsDisplayed);
 
     const [open, setOpen] = useState(false);
 
@@ -212,6 +213,7 @@ const Profile: React.FC = () => {
                         <div>
                             <Typography>基本情報</Typography>
                         </div>
+                        <div className={commonStyles.spacer__small} />
                         <Grid container item>
                             <Grid item md={4} className={classes.avatarContainer}>
                                 { loginUser.profile.thumbnail.url ?
@@ -223,6 +225,7 @@ const Profile: React.FC = () => {
                                     color="primary"
                                     onClick={handleOpen}
                                     className={classes.editPictureButton}
+                                    size="small"
                                     disableElevation
                                 >
                                     編集
@@ -271,12 +274,13 @@ const Profile: React.FC = () => {
                         <div>
                             <Typography>多言語情報</Typography>
                         </div>
+                        <div className={commonStyles.spacer__small} />
                         <Grid container item>
-                            <Grid item md={6} className={classes.avatarContainer}>
+                            <Grid item md={6}>
                                 <MultiProfileList />
                             </Grid>
-                            <Grid item md={6} className={classes.avatarContainer}>
-                                {editedMultiProfile.id ? <MultiProfileEdit /> : <MultiProfileDisplay />}
+                            <Grid item md={6}>
+                                { isDisplayed ? <MultiProfileDisplay /> : <MultiProfileEdit /> }
                             </Grid>
                         </Grid>
                     </Paper>

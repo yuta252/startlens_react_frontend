@@ -12,20 +12,39 @@ import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 import { langCategoryObj } from '../../app/constant';
-import { selectMultiProfiles, selectEditedMultiProfile, selectSelectedMultiProfile, editMultiProfile, selectedMultiProfile, initialState, fetchAsyncDeleteMultiProfile } from './profileSlice';
+import { selectMultiProfiles,
+    selectEditedMultiProfile,
+    selectSelectedMultiProfile,
+    editMultiProfile,
+    selectMultiProfile,
+    initialState,
+    fetchAsyncDeleteMultiProfile,
+    handleDisplayStatus,
+    selectIsDisplayed
+} from './profileSlice';
+import styles from './Profile.module.css';
+import commonStyles from '../../assets/Style.module.css';
 import { AppDispatch } from '../../app/store';
 import { READ_MULTI_PROFILE } from '../types';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
     addMultiProfileButton: {
-        width: "80px",
-        padding: theme.spacing(1),
+        width: "110px",
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         color: "white",
         fontWeight: theme.typography.fontWeightBold,
     },
+    langColumn: {
+        width: '80px',
+    },
+    editColumn: {
+        width: '80px',
+    }
 }));
 
 
@@ -34,7 +53,6 @@ const MultiProfileList: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const multiProfiles = useSelector(selectMultiProfiles)
-    const columns = multiProfiles[0] && Object.keys(multiProfiles[0]);
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
@@ -46,35 +64,47 @@ const MultiProfileList: React.FC = () => {
     }
 
     const showMultiProfile = (row: READ_MULTI_PROFILE) => {
-        dispatch(selectedMultiProfile(row));
+        dispatch(handleDisplayStatus(true));
+        dispatch(selectMultiProfile(row));
         dispatch(editMultiProfile(initialState.editedMultiProfile));
     }
 
+    const createMultiProfile = () => {
+        dispatch(handleDisplayStatus(false));
+        dispatch(editMultiProfile(initialState.editedMultiProfile));
+        dispatch(selectMultiProfile(initialState.selectedMultiProfile));
+    }
+
     return (
-        <>
-            <div>
-                <Typography variant="h5">言語別プロフィール一覧</Typography>
+        <div className={styles.multi_profile_list_wrapper}>
+            <div className={styles.multi_profile_list_header}>
+                <Typography variant="subtitle1">言語別プロフィール一覧</Typography>
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<AddIcon />}
+                    size="small"
                     className={classes.addMultiProfileButton}
+                    onClick={
+                        () => createMultiProfile()
+                    }
                     disableElevation
                 >
-                    登録
+                    新規登録
                 </Button>
             </div>
+            <div className={commonStyles.spacer__small} />
             {multiProfiles[0]?.id ? (
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            <TableCell className={classes.langColumn}>
                                 <strong>言語</strong>
                             </TableCell>
                             <TableCell>
                                 <strong>ユーザー名</strong>
                             </TableCell>
-                            <TableCell></TableCell>
+                            <TableCell className={classes.editColumn}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -96,11 +126,16 @@ const MultiProfileList: React.FC = () => {
                                 </TableCell>
                                 <TableCell align="center">
                                     <button
-                                        onClick={() => dispatch(editMultiProfile(row))}
+                                        className={styles.multi_profile_icon}
+                                        onClick={() => {
+                                            dispatch(editMultiProfile(row))
+                                            dispatch(handleDisplayStatus(false))
+                                        }}
                                     >
                                         <EditIcon />
                                     </button>
                                     <button
+                                        className={styles.multi_profile_icon}
                                         onClick={() => handleOpen()}
                                     >
                                         <DeleteIcon />
@@ -132,12 +167,11 @@ const MultiProfileList: React.FC = () => {
                     </TableBody>
                 </Table>
             ) : (
-                <div>
+                <div className={styles.multi_profile_no_content}>
                     <span>登録情報はありません。</span>
                 </div>
             )}
-
-        </>
+        </div>
     )
 }
 

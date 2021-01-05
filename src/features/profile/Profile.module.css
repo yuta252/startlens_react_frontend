@@ -21,3 +21,37 @@
     justify-content: center;
     margin: 12px 0;
 }
+
+.multi_profile_list_header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.multi_profile_list_wrapper {
+    padding: 8px 48px 8px 16px;
+}
+
+.multi_profile_display_wrapper {
+    padding: 8px 16px 8px 48px;
+}
+
+.multi_profile_no_content {
+    text-align: center;
+    font-size: 16px;
+}
+
+.multi_profile_icon {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    color: dimgray;
+    cursor: pointer;
+}
+
+.multi_profile_intro_wrapper {
+    margin: 16px 0;
+    padding: 16px;
+    font-size: 14px;
+    min-height: 200px;
+}

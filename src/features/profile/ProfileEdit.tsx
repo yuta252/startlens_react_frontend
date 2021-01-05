@@ -14,7 +14,7 @@ import { POST_PROFILE } from '../types';
 
 const useStyles = makeStyles( (theme: Theme) => ({
     formControl: {
-        minWidth: "120px",
+        minWidth: "200px",
     },
     editButton: {
         width: "150px",
@@ -82,7 +82,6 @@ const ProfileEdit: React.FC = () => {
                 name="companySite"
                 value={editedProfile.companySite}
                 onChange={handleInputChange}
-                autoFocus
             />
             <div className={commonStyles.spacer__medium} />
             <TextField
@@ -93,7 +92,6 @@ const ProfileEdit: React.FC = () => {
                 name="telephone"
                 value={editedProfile.telephone}
                 onChange={handleInputChange}
-                autoFocus
             />
             <div className={styles.basic_edit_btn_wrapper}>
                 <Button

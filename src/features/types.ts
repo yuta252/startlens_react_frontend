@@ -99,6 +99,7 @@ export interface POST_MULTI_PROFILE {
 
 export interface PROFILE_STATE {
     error: ERROR;
+    isDisplayed: boolean;
     multiProfiles: READ_MULTI_PROFILE[];
     editedMultiProfile: POST_MULTI_PROFILE;
     selectedMultiProfile: READ_MULTI_PROFILE;
