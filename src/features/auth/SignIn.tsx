@@ -76,8 +76,13 @@ const SignIn: React.FC = () => {
             return false
         }
         dispatch(toggleLoading());
-        await dispatch(fetchAsyncLogin(credential));
+        const result = await dispatch(fetchAsyncLogin(credential));;
+        // TODO: サーバーでのレスポンスエラー処理
+        if (fetchAsyncLogin.fulfilled.match(result)) {
+            window.location.href = "/dashboard";
+        }
     };
+
 
     return (
         <Container maxWidth="sm">

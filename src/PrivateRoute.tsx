@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, RouteProps, Redirect } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
 import _ from 'lodash';
-
-import { selectIsSignedIn } from "./features/auth/authSlice";
-
 
 
 const PrivateRoute: React.FC<RouteProps> = props => {
-    const isSignedIn = useSelector(selectIsSignedIn);
+    // ローカルストレージにJWT tokenがある場合のみルートへのアクセスを許可する
+    const isSignedIn = Boolean(localStorage.localJWT)
     const rest = _.omit(props, ['component']);
 
     return (
@@ -21,7 +18,7 @@ const PrivateRoute: React.FC<RouteProps> = props => {
                 ) : (
                     <Redirect
                         to={{
-                            pathname: '/auth',
+                            pathname: '/signin',
                             state: { from: innerProps.location }
                         }}
                     />

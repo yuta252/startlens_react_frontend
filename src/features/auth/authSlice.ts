@@ -9,7 +9,9 @@ import {
     PROFILE,
     JWT,
     USER,
-    ERROR
+    ERROR,
+    ERROR_RESPONSE,
+    THUMBNAIL_BASE64
 } from "../types";
 
 
@@ -32,7 +34,7 @@ export const fetchAsyncLogin = createAsyncThunk(
 export const fetchAsyncRegister = createAsyncThunk(
     "auth/register",
     async (auth: CRED) => {
-        const res = await axios.post<USER>(
+        const res = await axios.post<USER | ERROR_RESPONSE>(
             `${process.env.REACT_APP_API_URL}/api/v1/users`,
             { "user": auth },
             {
@@ -45,15 +47,14 @@ export const fetchAsyncRegister = createAsyncThunk(
     }
 );
 
-/*
-export const fetchAsyncGetMyProf = createAsyncThunk(
-    "auth/loginuser",
+export const fetchAsyncGetUserInfo = createAsyncThunk(
+    "auth/load",
     async () => {
-        const res = await axios.post<LOGIN_USER>(
-            `${process.env.REACT_APP_API_URL}/api/loginuser/`,
+        const res = await axios.get<LOGIN_USER>(
+            `${process.env.REACT_APP_API_URL}/api/v1/load`,
             {
                 headers: {
-                    Authorization: `JWT ${localStorage.localJWT}`,
+                    Authorization: `${localStorage.localJWT}`,
                 },
             }
         );
@@ -61,7 +62,41 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
     }
 );
 
+export const fetchAsyncUpdateProfile = createAsyncThunk(
+    "profile/updateProfile",
+    async (profile: POST_PROFILE) => {
+        const res = await axios.patch<PROFILE>(
+            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
+            { "profile": profile },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${localStorage.localJWT}`,
+                },
+            }
+        );
+        return res.data
+    }
+);
 
+export const fetchAsyncUpdateThumbnail = createAsyncThunk(
+    "profile/updateThumbnail",
+    async (thumbnail: THUMBNAIL_BASE64) => {
+        const res = await axios.patch<PROFILE>(
+            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
+            { "profile": thumbnail },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${localStorage.localJWT}`,
+                },
+            }
+        );
+        return res.data
+    }
+);
+
+/*
 export const fetchAsyncCrateMyProf = createAsyncThunk(
     "auth/createProfile",
     async () => {
@@ -122,12 +157,38 @@ const initialState: AUTH_STATE = {
         message: ""
     },
     isLoginView: true,
-    isSignedIn: false,
     isLoading: false,
+    isProfileEdited: false,
     loginUser: {
         id: 0,
         email: "",
+        profile: {
+            id: 0,
+            userId: 0,
+            majorCategory: 0,
+            telephone: "",
+            companySite: "",
+            thumbnail: {
+                url: "",
+            }
+        },
     },
+    editedProfile: {
+        majorCategory: 0,
+        telephone: "",
+        companySite: "",
+    },
+    editedProfileError: {
+        isError: false,
+        message: ""
+    },
+    editedThumbnailImage: {
+        imageFile: ""
+    },
+    editedThumbnailError: {
+        isError: false,
+        message: ""
+    }
 };
 
 export const authSlice = createSlice({
@@ -137,24 +198,68 @@ export const authSlice = createSlice({
         toggleMode(state) {
             state.isLoginView = !state.isLoginView;
         },
-        toggleSignIn(state) {
-            state.isSignedIn = !state.isSignedIn;
-        },
         showError(state, action: PayloadAction<ERROR>) {
             state.error = action.payload;
         },
         toggleLoading(state) {
             state.isLoading = !state.isLoading;
+        },
+        toggleProfileEdit(state) {
+            state.isProfileEdited = !state.isProfileEdited;
+        },
+        editProfile(state, action: PayloadAction<POST_PROFILE>) {
+            state.editedProfile = action.payload;
+        },
+        editThumbnailImage(state, action: PayloadAction<THUMBNAIL_BASE64>) {
+            state.editedThumbnailImage = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder.addCase(
             fetchAsyncLogin.fulfilled,
             (state, action: PayloadAction<JWT>) => {
-                state.isSignedIn = !state.isSignedIn
                 localStorage.setItem("localJWT", action.payload.token);
-                state.isLoading = !state.isLoading
-                action.payload.token && (window.location.href = "/");
+            }
+        );
+        builder.addCase(
+            fetchAsyncGetUserInfo.fulfilled,
+            (state, action: PayloadAction<LOGIN_USER>) => {
+                return {
+                    ...state,
+                    loginUser: action.payload,
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncRegister.rejected,
+            (state) => {
+                return {
+                    ...state, error: { isError: true, message: "メールアドレスもしくはパスワードに誤りがあります。" }
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncUpdateProfile.fulfilled,
+            (state, action: PayloadAction<PROFILE>) => {
+                return {
+                    ...state,
+                    loginUser: {
+                        ...state.loginUser,
+                        profile: action.payload
+                    }
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncUpdateThumbnail.fulfilled,
+            (state, action: PayloadAction<PROFILE>) => {
+                return {
+                    ...state,
+                    loginUser: {
+                        ...state.loginUser,
+                        profile: action.payload
+                    }
+                }
             }
         );
         /*
@@ -191,13 +296,16 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode, toggleSignIn, showError, toggleLoading } = authSlice.actions;
-
+export const { toggleMode, showError, toggleLoading, toggleProfileEdit, editProfile, editThumbnailImage } = authSlice.actions;
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
-export const selectIsSignedIn = (state: RootState) => state.auth.isSignedIn;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
+export const selectEditedProfile = (state: RootState) => state.auth.editedProfile;
+export const selectEditedProfileError = (state: RootState) => state.auth.editedProfileError;
+export const selectEditedThumbnailImage = (state: RootState) => state.auth.editedThumbnailImage;
+export const selectEditedThumbnailError = (state: RootState) => state.auth.editedThumbnailError;
 export const selectError = (state: RootState) => state.auth.error;
 export const selectIsLoading = (state: RootState) => state.auth.isLoading;
+export const selectIsProfileEdited = (state: RootState) => state.auth.isProfileEdited;
 
 export default authSlice.reducer;

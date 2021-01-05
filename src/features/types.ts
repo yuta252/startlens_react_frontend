@@ -4,6 +4,12 @@ export interface ERROR {
     message: string;
 }
 
+export interface ERROR_RESPONSE {
+    errors: {
+        [key: string]: string[]
+    }
+}
+
 /* authSlice.ts */
 
 export interface CRED {
@@ -21,95 +27,77 @@ export interface JWT {
     email: string;
 }
 
+export interface PROFILE {
+    id: number;
+    userId: number;
+    majorCategory: number;
+    telephone: string;
+    companySite: string;
+    thumbnail: {
+        url: string;
+    }
+}
+
+export interface POST_PROFILE {
+    majorCategory: number;
+    telephone: string;
+    companySite: string;
+}
+
 export interface LOGIN_USER {
     id: number;
     email: string;
+    profile: PROFILE;
+}
+
+export interface THUMBNAIL_BASE64 {
+    imageFile: string;
 }
 
 export interface AUTH_STATE {
     error: ERROR;
     isLoginView: boolean;
-    isSignedIn: boolean;
     isLoading: boolean;
+    isProfileEdited: boolean;
     loginUser: LOGIN_USER;
+    editedProfile: POST_PROFILE;
+    editedProfileError: ERROR;
+    editedThumbnailImage: THUMBNAIL_BASE64;
+    editedThumbnailError: ERROR;
 }
 
-
-
-/* Unused */
-
-
-
-export interface FILE extends Blob {
-    readonly lastModified: number;
-    readonly name: string;
-}
-
-export interface PROFILE {
+/* profileSlice */
+export interface READ_MULTI_PROFILE {
     id: number;
-    user_profile: number;
-    img: string | null;
+    userId: number;
+    username: string;
+    selfIntro: string;
+    addressPrefecture: string;
+    addressCity: string;
+    addressStreet: string;
+    entranceFee: string;
+    businessHours: string;
+    holiday: string;
+    translated: number;
 }
 
-export interface POST_PROFILE {
+export interface POST_MULTI_PROFILE {
     id: number;
-    img: File | null;
+    username: string;
+    selfIntro: string;
+    addressPrefecture: string;
+    addressCity: string;
+    addressStreet: string;
+    entranceFee: string;
+    businessHours: string;
+    holiday: string;
+    translated: number;
 }
 
 
-
-
-
-
-
-
-
-/* taskSlice.ts */
-export interface READ_TASK {
-    id: number;
-    task: string;
-    description: string;
-    criteria: string;
-    status: string;
-    status_name: string;
-    category: number;
-    category_item: string;
-    estimate: number;
-    responsible: number;
-    responsible_username: string;
-    owner: number;
-    owner_username: string;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface POST_TASK {
-    id: number;
-    task: string;
-    description: string;
-    criteria: string;
-    status: string;
-    category: number;
-    estimate: number;
-    responsible: number;
-}
-
-export interface CATEGORY {
-    id: number;
-    item: string;
-}
-
-export interface TASK_STATE {
-    tasks: READ_TASK[];
-    editedTask: POST_TASK;
-    selectedTask: READ_TASK;
-    users: USER[];
-    category: CATEGORY[];
-}
-
-/*TaskList.tsx*/
-export interface SORT_STATE {
-    rows: READ_TASK[];
-    order: "desc" | "asc";
-    activeKey: string;
+export interface PROFILE_STATE {
+    error: ERROR;
+    multiProfiles: READ_MULTI_PROFILE[];
+    editedMultiProfiles: POST_MULTI_PROFILE;
+    selectedMultiProfiles: READ_MULTI_PROFILE;
 }

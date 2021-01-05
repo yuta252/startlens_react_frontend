@@ -4,6 +4,7 @@ import SignIn from "./features/auth/SignIn";
 import SignUp from "./features/auth/SignUp";
 
 import Profile from './features/profile/Profile';
+import Dashboard from './features/dashboard/Dashboard';
 
 import PrivateRoute from './PrivateRoute';
 import NotFound from "./templates/NotFound";
@@ -14,6 +15,7 @@ const Router = () => {
             <Route exact path={"/signin"} component={SignIn} />
             <Route exact path={"/signup"} component={SignUp} />
             <PrivateRoute exact path={"/profile"} component={Profile} />
+            <PrivateRoute exact path={"/dashboard"} component={Dashboard} />
             <Route component={NotFound} />
         </Switch>
     )
