@@ -15,6 +15,10 @@ import { AppDispatch } from '../../app/store';
 import { Typography } from '@material-ui/core';
 
 import { selectLoginUser, selectIsProfileEdited, selectEditedThumbnailImage, selectEditedProfileError, editThumbnailImage, fetchAsyncUpdateThumbnail } from '../auth/authSlice';
+import { selectMultiProfiles, selectEditedMultiProfile, selectSelectedMultiProfile, selectMultiProfileError } from './profileSlice';
+import MultiProfileList from './MultiProfileList';
+import MultiProfileDisplay from './MultiProfileDisplay';
+import MultiProfileEdit from './MultiProfileEdit';
 import customStyles from './Profile.module.css';
 import ProfileDisplay from './ProfileDisplay';
 import ProfileEdit from './ProfileEdit';
@@ -111,6 +115,7 @@ const Profile: React.FC = () => {
     const loginUser = useSelector(selectLoginUser);
     const isProfileEdited = useSelector(selectIsProfileEdited);
     const editedThumbnailImage = useSelector(selectEditedThumbnailImage);
+    const editedMultiProfile = useSelector(selectEditedMultiProfile);
 
     const [open, setOpen] = useState(false);
 
@@ -255,6 +260,23 @@ const Profile: React.FC = () => {
                             </Grid>
                             <Grid item md={8}>
                                 {isProfileEdited ? <ProfileEdit /> : <ProfileDisplay />}
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </Grid>
+            <Grid container item>
+                <Grid item md={12}>
+                    <Paper className={classes.paper}>
+                        <div>
+                            <Typography>多言語情報</Typography>
+                        </div>
+                        <Grid container item>
+                            <Grid item md={6} className={classes.avatarContainer}>
+                                <MultiProfileList />
+                            </Grid>
+                            <Grid item md={6} className={classes.avatarContainer}>
+                                {editedMultiProfile.id ? <MultiProfileEdit /> : <MultiProfileDisplay />}
                             </Grid>
                         </Grid>
                     </Paper>

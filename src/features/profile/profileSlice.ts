@@ -13,7 +13,7 @@ export const fetchAsyncCreateMultiProfile = createAsyncThunk(
     "profile/createMultiProfile",
     async (multiProfile: POST_MULTI_PROFILE) => {
         const res = await axios.post<READ_MULTI_PROFILE>(
-            `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
+            `${process.env.REACT_APP_API_URL}/api/v1/profiles`,
             { multi_profile: multiProfile },
             {
                 headers: {
@@ -59,7 +59,7 @@ export const fetchAsyncDeleteMultiProfile = createAsyncThunk(
 );
 
 
-const initialState: PROFILE_STATE = {
+export const initialState: PROFILE_STATE = {
     error: {
         isError: false,
         message: ""
@@ -68,6 +68,7 @@ const initialState: PROFILE_STATE = {
         {
             id: 0,
             userId: 0,
+            lang: "",
             username: "",
             selfIntro: "",
             addressPrefecture: "",
@@ -79,8 +80,9 @@ const initialState: PROFILE_STATE = {
             translated: 0
         },
     ],
-    editedMultiProfiles: {
+    editedMultiProfile: {
         id: 0,
+        lang: "",
         username: "",
         selfIntro: "",
         addressPrefecture: "",
@@ -91,9 +93,10 @@ const initialState: PROFILE_STATE = {
         holiday: "",
         translated: 0
     },
-    selectedMultiProfiles: {
+    selectedMultiProfile: {
         id: 0,
         userId: 0,
+        lang: "",
         username: "",
         selfIntro: "",
         addressPrefecture: "",
@@ -111,10 +114,10 @@ export const profileSlice = createSlice({
     initialState,
     reducers: {
         editMultiProfile(state, action: PayloadAction<POST_MULTI_PROFILE>) {
-            state.editedMultiProfiles = action.payload;
+            state.editedMultiProfile = action.payload;
         },
         selectedMultiProfile(state, action: PayloadAction<READ_MULTI_PROFILE>) {
-            state.selectedMultiProfiles = action.payload;
+            state.selectedMultiProfile = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -124,7 +127,7 @@ export const profileSlice = createSlice({
                 return {
                     ...state,
                     multiProfiles: [action.payload, ...state.multiProfiles],
-                    editedProfiles: initialState.editedMultiProfiles
+                    editedProfiles: initialState.editedMultiProfile
                 }
             }
         );
@@ -136,8 +139,8 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.map( (multiProfile) =>
                         multiProfile.id === action.payload.id ? action.payload : multiProfile
                     ),
-                    editedProfiles: initialState.editedMultiProfiles,
-                    selectedProfiles: initialState.selectedMultiProfiles,
+                    editedProfiles: initialState.editedMultiProfile,
+                    selectedProfiles: initialState.selectedMultiProfile,
                 }
             }
         );
@@ -149,8 +152,8 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.filter( (multiProfile) =>
                         multiProfile.id !== action.payload
                     ),
-                    editedProfiles: initialState.editedMultiProfiles,
-                    selectedProfiles: initialState.selectedMultiProfiles,
+                    editedProfiles: initialState.editedMultiProfile,
+                    selectedProfiles: initialState.selectedMultiProfile,
                 }
             }
         );
@@ -159,9 +162,9 @@ export const profileSlice = createSlice({
 
 export const { editMultiProfile, selectedMultiProfile } = profileSlice.actions;
 
-export const selectMultiProfile = (state: RootState) => state.profile.multiProfiles;
-export const selectEditedMultiProfile = (state: RootState) => state.profile.editedMultiProfiles;
-export const selectSelectedMultiProfile = (state: RootState) => state.profile.selectedMultiProfiles;
+export const selectMultiProfiles = (state: RootState) => state.profile.multiProfiles;
+export const selectEditedMultiProfile = (state: RootState) => state.profile.editedMultiProfile;
+export const selectSelectedMultiProfile = (state: RootState) => state.profile.selectedMultiProfile;
 export const selectMultiProfileError = (state: RootState) => state.profile.error;
 
 export default profileSlice.reducer;
