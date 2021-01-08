@@ -142,9 +142,14 @@ export interface READ_PICTURE {
     pictures: PICTURE[];
 }
 
+export interface PARAMS {
+    last: number;
+}
+
 export interface EXHIBIT_STATE {
     error: ERROR;
     exhibits: READ_EXHIBIT[];
+    params: PARAMS;
     isDisplayed: boolean
     editedPicture: READ_PICTURE;
     editedMultiExhibit: MULTI_EXHIBIT;
@@ -152,3 +157,9 @@ export interface EXHIBIT_STATE {
     selectMultiExhibit: MULTI_EXHIBIT[];
 }
 
+export interface EXHIBIT_PAGINATE_INDEX {
+    data: READ_EXHIBIT[];
+    meta: {
+        params: PARAMS;
+    }
+}

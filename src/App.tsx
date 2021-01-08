@@ -46,7 +46,7 @@ const App: React.FC = () => {
                 if (fetchAsyncGetUserInfo.fulfilled.match(result)) {
                     // load other data after user login info is loaded once
                     await dispatch(fetchAsyncGetMultiProfile());
-                    await dispatch(fetchAsyncGetExhibits());
+                    await dispatch(fetchAsyncGetExhibits(1));
                 }
             }
         };
