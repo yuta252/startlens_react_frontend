@@ -96,60 +96,6 @@ export const fetchAsyncUpdateThumbnail = createAsyncThunk(
     }
 );
 
-/*
-export const fetchAsyncCrateMyProf = createAsyncThunk(
-    "auth/createProfile",
-    async () => {
-        const res = await axios.post<PROFILE>(
-            `${process.env.REACT_APP_API_URL}/api/profile/`,
-            { img: null},
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `JWT ${localStorage.localJWT}`,
-                },
-            }
-        );
-        return res.data
-    }
-);
-
-
-export const fetchAsyncGetProfs = createAsyncThunk(
-    "auth/getProfiles",
-    async () => {
-        const res = await axios.get<PROFILE[]>(
-            `${process.env.REACT_APP_API_URL}/api/profile/`,
-            {
-                headers: {
-                    Authorization: `JWT ${localStorage.localJWT}`,
-                },
-            }
-        );
-        return res.data
-    }
-);
-
-
-export const fetchAsyncUpdateProf = createAsyncThunk(
-    "auth/updateProfile",
-    async (profile: POST_PROFILE) => {
-        const uploadData = new FormData();
-        profile.img && uploadData.append("img", profile.img, profile.img.name)
-        const res = await axios.put<PROFILE>(
-            `${process.env.REACT_APP_API_URL}/api/profile/${profile.id}`,
-            uploadData,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `JWT ${localStorage.localJWT}`,
-                },
-            }
-        );
-        return res.data
-    }
-);
-*/
 
 const initialState: AUTH_STATE = {
     error: {
@@ -262,37 +208,6 @@ export const authSlice = createSlice({
                 }
             }
         );
-        /*
-        builder.addCase(
-            fetchAsyncGetMyProf.fulfilled,
-            (state, action: PayloadAction<LOGIN_USER>) => {
-                return {
-                    ...state,
-                    loginUser: action.payload,
-                }
-            }
-        );
-        builder.addCase(
-            fetchAsyncGetProfs.fulfilled,
-            (state, action: PayloadAction<PROFILE[]>) => {
-                return {
-                    ...state,
-                    profiles: action.payload,
-                }
-            }
-        );
-        builder.addCase(
-            fetchAsyncUpdateProf.fulfilled,
-            (state, action: PayloadAction<PROFILE>) => {
-                return {
-                    ...state,
-                    profiles: state.profiles.map( (prof) =>
-                        prof.id === action.payload.id ? action.payload : prof
-                    ),
-                };
-            }
-        );
-        */
     },
 });
 

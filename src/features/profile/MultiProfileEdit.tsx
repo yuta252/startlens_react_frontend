@@ -197,6 +197,7 @@ const MultiProfileEdit: React.FC = () => {
                 size="small"
                 onChange={handleInputChange}
             />
+            <div className={commonStyles.spacer__medium} />
             <div className={styles.basic_edit_btn_wrapper}>
                 <Button
                     variant="outlined"
