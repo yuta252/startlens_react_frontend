@@ -74,12 +74,12 @@ const SideNavigator: React.FC = () => {
             anchor="left"
         >
             <div className={classes.toolbarTitle}>
-                    <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} alt="logo" />
-                    <Link to="./dashboard" className={classes.titleLink} onClick={() => handleListItemClick(0)}>
-                        <Typography variant="h5" className={classes.title}>
-                            Startlens
-                        </Typography>
-                    </Link>
+                <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} alt="logo" />
+                <Link to="./dashboard" className={classes.titleLink} onClick={() => handleListItemClick(0)}>
+                    <Typography variant="h5" className={classes.title}>
+                        Startlens
+                    </Typography>
+                </Link>
             </div>
             <Divider />
             <List>
@@ -95,7 +95,7 @@ const SideNavigator: React.FC = () => {
                     </StyledListItem>
                 </NavLink>
                 <NavLink exact to="/exhibit" className={classes.link}>
-                    <StyledListItem 
+                    <StyledListItem
                         button
                         selected={selectedIndex === 1}
                         key={'Image'}

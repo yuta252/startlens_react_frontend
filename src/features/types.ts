@@ -104,3 +104,51 @@ export interface PROFILE_STATE {
     editedMultiProfile: POST_MULTI_PROFILE;
     selectedMultiProfile: READ_MULTI_PROFILE;
 }
+
+/* exhibitSlice */
+export interface PICTURE {
+    id: number;
+    url: string;
+}
+
+export interface POST_PICTURE {
+    exhibitId: number
+    imageFile: string[];
+}
+
+export interface MULTI_EXHIBIT {
+    id: number;
+    exhibitId: number;
+    lang: string;
+    name: string;
+    description: string;
+}
+
+export interface READ_EXHIBIT {
+    id: number;
+    pictures: PICTURE[];
+    multiExhibits: MULTI_EXHIBIT[];
+}
+
+export interface POST_EXHIBIT {
+    lang: string;
+    name: string;
+    description: string;
+    imageFile: string[];
+}
+
+export interface READ_PICTURE {
+    id: number;
+    pictures: PICTURE[];
+}
+
+export interface EXHIBIT_STATE {
+    error: ERROR;
+    exhibits: READ_EXHIBIT[];
+    isDisplayed: boolean
+    editedPicture: READ_PICTURE;
+    editedMultiExhibit: MULTI_EXHIBIT;
+    selectPicture: READ_PICTURE;
+    selectMultiExhibit: MULTI_EXHIBIT[];
+}
+
