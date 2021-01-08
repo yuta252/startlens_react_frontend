@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -21,11 +21,16 @@ import { AppDispatch } from '../../app/store';
 import { Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
+import MuiPagination from '@material-ui/lab/Pagination';
+
+
 import {
     selectExhibits,
     selectPicture,
     selectMultiExhibit,
-    fetchAsyncDeleteExhibit
+    fetchAsyncDeleteExhibit,
+    fetchAsyncGetExhibits,
+    selectParams
 } from './exhibitSlice';
 import styles from './Exhibit.module.css';
 import commonStyles from '../../assets/Style.module.css';
@@ -57,8 +62,17 @@ const useStyles = makeStyles( (theme: Theme) => ({
     cardButton: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    pagination: {
+        display: 'inline-block',
     }
 }));
+
+const Pagination = withStyles({
+    root: {
+        display: 'inline-block',
+    },
+})(MuiPagination);
 
 
 const Exhibit: React.FC = () => {
@@ -67,7 +81,9 @@ const Exhibit: React.FC = () => {
     const handleLink = (path: string) => history.push(path);
     const dispatch: AppDispatch = useDispatch();
     const exhibits = useSelector(selectExhibits);
+    const params = useSelector(selectParams);
     const [openConfirm, setOpenConfirm] = useState(false);
+    const [page, setPage] = useState(1);
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true);
@@ -86,6 +102,11 @@ const Exhibit: React.FC = () => {
     const deleteExhibitActin = async (exhibitId: number) => {
         await dispatch(fetchAsyncDeleteExhibit(exhibitId))
         handleCloseConfirm()
+    }
+
+    const getExhibitsPaginated = async (page: number) => {
+        await dispatch(fetchAsyncGetExhibits(page));
+        setPage(page);
     }
 
     return (
@@ -168,6 +189,15 @@ const Exhibit: React.FC = () => {
                     <span>新規登録から画像登録をお願いします</span>
                 </div>
             )}
+            <div className={styles.exhibit_pagination_wrapper}>
+                <Pagination
+                    className={classes.pagination}
+                    count={params.last}
+                    color="primary"
+                    onChange={(e, page) => getExhibitsPaginated(page)}
+                    page={page}
+                />
+            </div>
         </Grid>
     )
 }

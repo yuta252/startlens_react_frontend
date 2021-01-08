@@ -27,3 +27,9 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.exhibit_pagination_wrapper {
+    margin: 24px 0;
+    width: 100%;
+    text-align: center;
+}

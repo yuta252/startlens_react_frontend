@@ -7,15 +7,17 @@ import {
     MULTI_EXHIBIT,
     READ_EXHIBIT,
     POST_EXHIBIT,
-    POST_PICTURE
+    POST_PICTURE,
+    EXHIBIT_PAGINATE_INDEX,
+    PARAMS
 } from "../types";
 
 
 export const fetchAsyncGetExhibits = createAsyncThunk(
     "exhibit/getExhibits",
-    async () => {
-        const res = await axios.get<READ_EXHIBIT[]>(
-            `${process.env.REACT_APP_API_URL}/api/v1/exhibits`,
+    async (page: number) => {
+        const res = await axios.get<EXHIBIT_PAGINATE_INDEX>(
+            `${process.env.REACT_APP_API_URL}/api/v1/exhibits?page=${page}`,
             {
                 headers: {
                     Authorization: `${localStorage.localJWT}`,
@@ -152,6 +154,9 @@ export const initialState: EXHIBIT_STATE = {
             ]
         },
     ],
+    params: {
+        last: 1
+    },
     isDisplayed: true,
     editedPicture: {
         id: 0,
@@ -212,10 +217,13 @@ export const exhibitSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(
             fetchAsyncGetExhibits.fulfilled,
-            (state, action: PayloadAction<READ_EXHIBIT[]>) => {
+            (state, action: PayloadAction<EXHIBIT_PAGINATE_INDEX>) => {
+                const data: READ_EXHIBIT[] = action.payload.data;
+                const meta = action.payload.meta;
                 return {
                     ...state,
-                    exhibits: action.payload,
+                    exhibits: data,
+                    params: meta.params
                 };
             }
         );
@@ -308,6 +316,7 @@ export const { editPicture, selectPicture, editMultiExhibit, selectMultiExhibit,
 
 export const selectError = (state: RootState) => state.exhibit.error;
 export const selectExhibits = (state: RootState) => state.exhibit.exhibits;
+export const selectParams = (state: RootState) => state.exhibit.params;
 export const selectIsDisplayed = (state: RootState) => state.exhibit.isDisplayed;
 export const selectEditedPicture = (state: RootState) => state.exhibit.editedPicture;
 export const selectEditedMultiExhibit = (state: RootState) => state.exhibit.editedMultiExhibit;
