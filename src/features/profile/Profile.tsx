@@ -217,7 +217,7 @@ const Profile: React.FC = () => {
                         <Grid container item>
                             <Grid item md={4} className={classes.avatarContainer}>
                                 { loginUser.profile.thumbnail.url ?
-                                    (<Avatar variant="rounded" src={process.env.REACT_APP_API_URL + loginUser.profile.thumbnail.url} className={classes.avatar} alt="logo" />)
+                                    (<Avatar variant="rounded" src={loginUser.profile.thumbnail.url} className={classes.avatar} alt="logo" />)
                                     : (<Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />) 
                                 }
                                 <Button
