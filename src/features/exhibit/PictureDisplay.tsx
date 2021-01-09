@@ -39,7 +39,7 @@ const PictureDisplay: React.FC = () => {
                 {selectedPicture.pictures.length > 0 && (
                     selectedPicture.pictures.map( (picture: PICTURE) => (
                         <Grid key={picture.id} item xs={12} lg={3} md={4} className={classes.preview}>
-                            <Avatar variant="rounded" src={process.env.REACT_APP_API_URL + picture.url} className={classes.displayedPictureAvatar} alt="picture" />
+                            <Avatar variant="rounded" src={picture.url} className={classes.displayedPictureAvatar} alt="picture" />
                         </Grid>
                         )
                     )

@@ -141,7 +141,7 @@ const Exhibit: React.FC = () => {
                                     >
                                         <CardMedia
                                             className={classes.media}
-                                            image={process.env.REACT_APP_API_URL + exhibit.pictures[0]?.url}
+                                            image={exhibit.pictures[0]?.url}
                                             title="画像"
                                         />
                                         <CardContent>

@@ -39,7 +39,7 @@ import PictureDisplay from './PictureDisplay';
 import PictureEdit from './PictureEdit';
 import customStyles from './Exhibit.module.css';
 import commonStyles from '../../assets/Style.module.css';
-import { 
+import {
     MULTI_EXHIBIT
 } from '../types';
 import { langCategoryObj } from '../../app/constant';
