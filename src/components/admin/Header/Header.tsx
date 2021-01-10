@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Menu, { MenuProps } from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Avatar, Badge } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { useDispatch } from 'react-redux';
 
-import styles from './Header.module.css';
-import { AppDispatch } from '../../app/store';
+import { makeStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+    Avatar,
+    AppBar,
+    Badge,
+    Button,
+    IconButton,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Toolbar
+} from '@material-ui/core';
+import Menu, { MenuProps } from '@material-ui/core/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 
 const drawerWidth = 240;
@@ -87,7 +86,6 @@ const StyledMenu = withStyles({
 
 
 const Header: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const classes = useStyles();
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -100,7 +98,7 @@ const Header: React.FC = () => {
 
     const logout = () => {
         localStorage.removeItem("localJWT");
-        window.location.href = "/signin";
+        window.location.href = "/admin/signin";
     }
 
     return (

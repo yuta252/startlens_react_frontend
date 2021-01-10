@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from "@material-ui/core/styles";
 
-import { fetchAsyncGetUserInfo } from './features/auth/authSlice';
-import { fetchAsyncGetMultiProfile } from './features/profile/profileSlice';
-import { fetchAsyncGetExhibits } from './features/exhibit/exhibitSlice';
+import { fetchAsyncGetUserInfo } from './features/admin/auth/authSlice';
+import { fetchAsyncGetMultiProfile } from './features/admin/profile/profileSlice';
+import { fetchAsyncGetExhibits } from './features/admin/exhibit/exhibitSlice';
 
 import { AppDispatch } from './app/store';
-import Router from './Router';
+import Router from './routes/Router';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 
-import Header from './components/Header/Header';
-import SideNavigator from './components/SideNavigator/SideNavigator';
+import Header from './components/admin/Header/Header';
+import SideNavigator from './components/admin/SideNavigator/SideNavigator';
 
 
 const useStyles = makeStyles( (theme) => ({
@@ -33,7 +33,8 @@ const useStyles = makeStyles( (theme) => ({
 const App: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const location = useLocation();
-    const isDisplayed: Boolean = (location.pathname !== '/signin' && location.pathname !== '/signup')
+    const isDisplayedAdmin: Boolean = !(location.pathname === '/admin/signin' || location.pathname === '/admin/signup')
+    const isAdminPath: Boolean = /^\/admin\//.test(location.pathname)
     const classes = useStyles();
 
     useEffect( () => {
@@ -55,10 +56,10 @@ const App: React.FC = () => {
 
     return (
         <div className={classes.root}>
-            {isDisplayed && <Header />}
-            {isDisplayed && <SideNavigator />}
+            {isAdminPath && isDisplayedAdmin && <Header />}
+            {isAdminPath && isDisplayedAdmin && <SideNavigator />}
             <main className={classes.content}>
-                { isDisplayed && <div className={classes.appBarSpacer} /> }
+                { isAdminPath && isDisplayedAdmin && <div className={classes.appBarSpacer} /> }
                 <Container maxWidth={false} className={classes.container} >
                     <Router />
                 </Container>

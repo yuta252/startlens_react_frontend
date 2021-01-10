@@ -1,17 +1,22 @@
 import React from 'react'
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import { Button, Avatar } from '@material-ui/core';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
 import {
+    Avatar,
+    Button,
+    Grid,
+} from '@material-ui/core';
+
+import { AppDispatch } from '../../../app/store';
+import {
+    changeDisplay,
     selectSelectedPicture,
-    changeDisplay
 } from './exhibitSlice';
+import commonStyles from '../../../assets/Style.module.css';
 import customStyles from './Exhibit.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { PICTURE } from '../types';
+import { PICTURE } from '../../types';
+
 
 const useStyles = makeStyles( (theme: Theme) => ({
     preview: {

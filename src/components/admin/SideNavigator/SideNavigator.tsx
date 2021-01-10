@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar'
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import {
+    Avatar,
+    Drawer,
+    Divider,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Typography
+} from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PersonIcon from '@material-ui/icons/Person';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
-import { Link, NavLink } from 'react-router-dom';
-
 
 
 const drawerWidth = 240;
-
 
 const useStyles = makeStyles( (theme) => ({
     drawer: {
@@ -83,7 +84,7 @@ const SideNavigator: React.FC = () => {
             </div>
             <Divider />
             <List>
-                <NavLink exact to="/dashboard" className={classes.link}>
+                <NavLink exact to="/admin/dashboard" className={classes.link}>
                     <StyledListItem
                         button
                         selected={selectedIndex === 0}
@@ -94,7 +95,7 @@ const SideNavigator: React.FC = () => {
                         <ListItemText primary={'ダッシュボード'} />
                     </StyledListItem>
                 </NavLink>
-                <NavLink exact to="/exhibit" className={classes.link}>
+                <NavLink exact to="/admin/exhibit" className={classes.link}>
                     <StyledListItem
                         button
                         selected={selectedIndex === 1}
@@ -105,7 +106,7 @@ const SideNavigator: React.FC = () => {
                         <ListItemText primary={'画像アップロード'} />
                     </StyledListItem>
                 </NavLink>
-                <NavLink exact to="/profile" className={classes.link}>
+                <NavLink exact to="/admin/profile" className={classes.link}>
                     <StyledListItem
                         button
                         selected={selectedIndex === 2}

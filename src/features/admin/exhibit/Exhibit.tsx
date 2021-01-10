@@ -1,41 +1,38 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme, withStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
-import { Typography } from '@material-ui/core';
+import {
+    Button,
+    Card,
+    CardActionArea,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    Grid,
+    Typography
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-
 import MuiPagination from '@material-ui/lab/Pagination';
 
-
+import { AppDispatch } from '../../../app/store';
 import {
-    selectExhibits,
-    selectPicture,
-    selectMultiExhibit,
     fetchAsyncDeleteExhibit,
     fetchAsyncGetExhibits,
-    selectParams
+    selectExhibits,
+    selectMultiExhibit,
+    selectParams,
+    selectPicture
 } from './exhibitSlice';
+import { READ_EXHIBIT } from '../../types';
 import styles from './Exhibit.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { READ_EXHIBIT } from '../types';
-
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -96,7 +93,7 @@ const Exhibit: React.FC = () => {
     const displayExhibitAction = (exhibit: READ_EXHIBIT) => {
         dispatch(selectPicture({id: exhibit.id, pictures: exhibit.pictures}));
         dispatch(selectMultiExhibit(exhibit.multiExhibits));
-        handleLink('/exhibit/detail');
+        handleLink('/admin/exhibit/detail');
     }
 
     const deleteExhibitActin = async (exhibitId: number) => {

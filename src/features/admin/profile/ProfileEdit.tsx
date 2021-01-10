@@ -1,15 +1,26 @@
-import React, { useState } from 'react'
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Button, TextField, InputLabel, MenuItem, FormControl, Select } from "@material-ui/core";
 
-import styles from './Profile.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { majorCategoryObj } from '../../app/constant';
-import { AppDispatch } from '../../app/store';
-import { selectEditedProfile } from '../auth/authSlice';
-import { editProfile, toggleProfileEdit, fetchAsyncUpdateProfile } from "../auth/authSlice";
-import { POST_PROFILE } from '../types';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import {
+    Button,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from "@material-ui/core";
+
+import { AppDispatch } from '../../../app/store';
+import customStyles from './Profile.module.css';
+import commonStyles from '../../../assets/Style.module.css';
+import { majorCategoryObj } from '../../../app/constant';
+import {
+    editProfile,
+    fetchAsyncUpdateProfile,
+    selectEditedProfile,
+    toggleProfileEdit,
+} from "../auth/authSlice";
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -93,7 +104,7 @@ const ProfileEdit: React.FC = () => {
                 value={editedProfile.telephone}
                 onChange={handleInputChange}
             />
-            <div className={styles.basic_edit_btn_wrapper}>
+            <div className={customStyles.basic_edit_btn_wrapper}>
                 <Button
                     variant="contained"
                     fullWidth

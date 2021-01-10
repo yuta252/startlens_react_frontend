@@ -1,28 +1,41 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import { TextField, Button, Avatar, Link, Dialog, createStyles } from "@material-ui/core";
+import {
+    Avatar,
+    Button,
+    createStyles,
+    Dialog,
+    Divider,
+    Grid,
+    Paper,
+    Typography
+} from "@material-ui/core";
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
-import { Typography } from '@material-ui/core';
 
-import { selectLoginUser, selectIsProfileEdited, selectEditedThumbnailImage, selectEditedProfileError, editThumbnailImage, fetchAsyncUpdateThumbnail } from '../auth/authSlice';
-import { selectMultiProfiles, selectEditedMultiProfile, selectSelectedMultiProfile, selectMultiProfileError, handleDisplayStatus, selectIsDisplayed } from './profileSlice';
-import MultiProfileList from './MultiProfileList';
-import MultiProfileDisplay from './MultiProfileDisplay';
+import { AppDispatch } from '../../../app/store';
+import {
+    editThumbnailImage,
+    fetchAsyncUpdateThumbnail,
+    selectEditedThumbnailImage,
+    selectLoginUser,
+    selectIsProfileEdited,
+} from '../auth/authSlice';
+import {
+    selectIsDisplayed
+} from './profileSlice';
 import MultiProfileEdit from './MultiProfileEdit';
-import customStyles from './Profile.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import ProfileDisplay from './ProfileDisplay';
+import MultiProfileDisplay from './MultiProfileDisplay';
+import MultiProfileList from './MultiProfileList';
 import ProfileEdit from './ProfileEdit';
+import ProfileDisplay from './ProfileDisplay';
+import commonStyles from '../../../assets/Style.module.css';
+import customStyles from './Profile.module.css';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -112,11 +125,11 @@ const DialogActions = withStyles((theme: Theme) => ({
 const Profile: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
-    const loginUser = useSelector(selectLoginUser);
-    const isProfileEdited = useSelector(selectIsProfileEdited);
+
     const editedThumbnailImage = useSelector(selectEditedThumbnailImage);
-    const editedMultiProfile = useSelector(selectEditedMultiProfile);
+    const loginUser = useSelector(selectLoginUser);
     const isDisplayed = useSelector(selectIsDisplayed);
+    const isProfileEdited = useSelector(selectIsProfileEdited);
 
     const [open, setOpen] = useState(false);
 
@@ -137,9 +150,6 @@ const Profile: React.FC = () => {
         const THUMBNAIL_WIDTH = 500;
         const THUMBNAIL_HEIGHT = 500;
 
-        console.log(e.target.files![0]);
-        console.log(e.target.files![0].name);
-        console.log(e.target.files![0].type);
         const file: File = e.target.files![0];
         // validation: jpg and png format is permitted to upload as an image
         if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {

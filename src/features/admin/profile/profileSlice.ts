@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../../app/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from "axios";
+
+import { RootState } from '../../../app/store';
 import {
-    PROFILE_STATE,
-    ERROR,
     POST_MULTI_PROFILE,
+    PROFILE_STATE,
     READ_MULTI_PROFILE
-} from "../types";
+} from "../../types";
 
 
 export const fetchAsyncGetMultiProfile = createAsyncThunk(

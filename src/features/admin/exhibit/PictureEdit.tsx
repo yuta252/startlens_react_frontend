@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import Grid from '@material-ui/core/Grid';
-import { Button, Avatar, Snackbar } from '@material-ui/core';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
 import {
+    Avatar,
+    Button,
+    Grid,
+    Snackbar
+} from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+
+import { AppDispatch } from '../../../app/store';
+import {
+    changeDisplay,
     fetchAsyncUpdatePicture,
     selectSelectedPicture,
-    changeDisplay,
-    selectExhibits
 } from './exhibitSlice';
 import customStyles from './Exhibit.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { POST_PICTURE, READ_EXHIBIT } from '../types';
+import commonStyles from '../../../assets/Style.module.css';
+import { POST_PICTURE } from '../../types';
 
 function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -56,7 +60,6 @@ const PictureEdit: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const selectedPicture = useSelector(selectSelectedPicture);
-    const exhibits = useSelector(selectExhibits);
     const [errorOpen, setErrorOpen] = useState(false);
     const [successOpen, setSuccessOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
@@ -84,9 +87,6 @@ const PictureEdit: React.FC = () => {
         // convert from fileList to Array list
         const files: File[] = Array.from(fileList);
         files.map( (file: File) => {
-            console.log(file);
-            console.log(file.name);
-            console.log(file.type);
             // validation: jpg and png format is permitted to upload as an image
             if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
                 console.log("validation failed")
@@ -124,6 +124,7 @@ const PictureEdit: React.FC = () => {
             reader.onerror = (error) => {
                 console.log("error: cannot read any files");
             }
+            return false;
         })
     }
 
@@ -136,7 +137,6 @@ const PictureEdit: React.FC = () => {
         }
         if (fetchAsyncUpdatePicture.fulfilled.match(result)) {
             setSuccessOpen(true);
-            //dispatch(selectPicture())
             dispatch(changeDisplay(true));
             setImages([]);
         }

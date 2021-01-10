@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import styles from "./Auth.module.css";
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { TextField, Button, Avatar, Link } from "@material-ui/core";
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../app/store";
-import { fetchAsyncLogin, fetchAsyncRegister, showError, toggleLoading, selectError, selectIsLoading } from "./authSlice";
+
+import { makeStyles, Theme } from "@material-ui/core/styles";
+import {
+    Avatar,
+    Button,
+    Container,
+    CircularProgress,
+    Link,
+    Paper,
+    TextField,
+    Typography
+} from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
+
+import { AppDispatch } from "../../../app/store";
+import {
+    fetchAsyncLogin,
+    selectError,
+    selectIsLoading,
+    showError,
+    toggleLoading
+} from "./authSlice";
+import commonStyles from "../../../assets/Style.module.css";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -55,12 +68,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-const SignUp: React.FC = () => {
+const SignIn: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const error = useSelector(selectError);
     const isLoading = useSelector(selectIsLoading);
-    const [credential, setCredential] = useState({ email: "", password: "", confirmPassword: "" });
+    const [credential, setCredential] = useState({ email: "", password: "" });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -68,35 +81,24 @@ const SignUp: React.FC = () => {
         setCredential({ ...credential, [name]: value });
     };
 
-    const signUp = async () => {
+    const signIn = async () => {
         // Validation
         if (credential.email === "" || credential.password === "") {
             dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードが未入力です" }))
             return false
         }
-
-        if (credential.password !== credential.confirmPassword) {
-            dispatch(showError({ isError: true, message: "入力された確認パスワードが一致しません。" }))
-            return false
-        }
-
-        // TODO: バリデーションの追加（Emailの形式、パスワードの長さ）
-        // TODO: バリデーションエラーを画面に表示追加
         dispatch(toggleLoading());
-        const result = await dispatch(fetchAsyncRegister({ email: credential.email, password: credential.password }));
-        // TODO: サーバーのバリデーションハンドリング
-        if (fetchAsyncRegister.rejected.match(result)) {
-            console.log(result)
-            dispatch(toggleLoading());
+        const result = await dispatch(fetchAsyncLogin(credential));;
+        // TODO: サーバーでのレスポンスエラー処理
+        if (fetchAsyncLogin.rejected.match(result)) {
+            dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードに誤りがあります。" }))
             return false
         }
-        if (fetchAsyncRegister.fulfilled.match(result)) {
-            dispatch(toggleLoading());
-            await dispatch(fetchAsyncLogin({ email: credential.email, password: credential.password }));
-            // TODO:　ホーム画面への直接遷移させるか検討
-            window.location.href = "/dashboard";
+        if (fetchAsyncLogin.fulfilled.match(result)) {
+            window.location.href = "/admin/dashboard";
         }
     };
+
 
     return (
         <Container maxWidth="sm">
@@ -104,9 +106,9 @@ const SignUp: React.FC = () => {
                 { isLoading && <CircularProgress /> }
                 <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />
                 <Typography variant="h5" className={classes.title} >
-                    新規登録
+                    ログイン
                 </Typography>
-                <div className={styles.spacer__medium}></div>
+                <div className={commonStyles.spacer__medium}></div>
                 <TextField
                     variant="outlined"
                     fullWidth
@@ -117,7 +119,7 @@ const SignUp: React.FC = () => {
                     onChange={handleInputChange}
                     autoFocus
                 />
-                <div className={styles.spacer__small} />
+                <div className={commonStyles.spacer__small} />
                 <TextField
                     variant="outlined"
                     fullWidth
@@ -126,18 +128,6 @@ const SignUp: React.FC = () => {
                     name="password"
                     value={credential.password}
                     onChange={handleInputChange}
-                    autoFocus
-                />
-                <div className={styles.spacer__small} />
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    label="確認用パスワード"
-                    type="password"
-                    name="confirmPassword"
-                    value={credential.confirmPassword}
-                    onChange={handleInputChange}
-                    autoFocus
                 />
                 { error.isError && (<span className={classes.spanError}> {error.message} </span>) }
                 <Button
@@ -146,17 +136,21 @@ const SignUp: React.FC = () => {
                     type="submit"
                     color="primary"
                     className={classes.submit}
-                    onClick={signUp}
+                    onClick={signIn}
                 >
-                    新規登録
+                    ログイン
                 </Button>
-                <div className={styles.divider__small} />
-                <Link href="./signin" variant="body2" color="secondary">
-                    ログイン画面へ
+                <Alert severity="info" className={classes.snackbar}>
+                    <AlertTitle>デモアカウント</AlertTitle>
+                    Email:<strong>info@startlens.com</strong>, Password: <strong>startlens</strong>
+                </Alert>
+                <div className={commonStyles.divider__small} />
+                <Link href="./signup" variant="body2" color="secondary">
+                    アカウントを新規で登録する
                 </Link>
             </Paper>
         </Container>
     );
 };
 
-export default SignUp
+export default SignIn

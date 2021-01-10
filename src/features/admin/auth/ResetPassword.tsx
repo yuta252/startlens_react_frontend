@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import styles from "./Auth.module.css";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { TextField, Button } from "@material-ui/core";
+import {
+    Button,
+    TextField
+} from "@material-ui/core";
 
+import commonStyles from "../../../assets/Style.module.css";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button: {
@@ -31,7 +34,7 @@ const ResetPassword: React.FC = () => {
     };
 
     return (
-        <div className={styles.auth__root}>
+        <div className={commonStyles.auth__root}>
             <h1>パスワードリセット</h1>
             <br/>
             <TextField

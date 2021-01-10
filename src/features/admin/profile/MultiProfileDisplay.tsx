@@ -1,12 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
-import { Table, TableCell, TableRow, TableBody } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import styles from './Profile.module.css';
-import { langCategoryObj } from '../../app/constant';
-import commonStyles from '../../assets/Style.module.css';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    Typography,
+} from '@material-ui/core';
+
+import customStyles from './Profile.module.css';
+import commonStyles from '../../../assets/Style.module.css';
+import { langCategoryObj } from '../../../app/constant';
 import { selectSelectedMultiProfile } from './profileSlice';
 
 
@@ -22,7 +28,7 @@ const MultiProfileDisplay: React.FC = () => {
     const selectedMultiProfile = useSelector(selectSelectedMultiProfile);
 
     return (
-        <div className={styles.multi_profile_display_wrapper}>
+        <div className={customStyles.multi_profile_display_wrapper}>
             <Typography variant="subtitle1">言語プロフィール詳細</Typography>
             <div className={commonStyles.spacer__small} />
             {selectedMultiProfile.id ? (
@@ -95,7 +101,7 @@ const MultiProfileDisplay: React.FC = () => {
                             </TableRow>
                         </TableBody>
                     </Table>
-                    <div className={styles.multi_profile_intro_wrapper}>
+                    <div className={customStyles.multi_profile_intro_wrapper}>
                         <strong>紹介文</strong>
                         <div>
                             <span>{selectedMultiProfile.selfIntro}</span>
@@ -103,7 +109,7 @@ const MultiProfileDisplay: React.FC = () => {
                     </div>
                 </div>
             ) :
-                <div className={styles.multi_profile_no_content}>
+                <div className={customStyles.multi_profile_no_content}>
                     <span>リストから選択してください。</span>
                 </div>
             }

@@ -1,16 +1,16 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../../app/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from "axios";
+
+import { RootState } from '../../../app/store';
 import {
     EXHIBIT_STATE,
-    READ_PICTURE,
+    EXHIBIT_PAGINATE_INDEX,
     MULTI_EXHIBIT,
-    READ_EXHIBIT,
     POST_EXHIBIT,
     POST_PICTURE,
-    EXHIBIT_PAGINATE_INDEX,
-    PARAMS
-} from "../types";
+    READ_EXHIBIT,
+    READ_PICTURE,
+} from "../../types";
 
 
 export const fetchAsyncGetExhibits = createAsyncThunk(

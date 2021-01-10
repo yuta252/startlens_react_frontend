@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Select, InputLabel, MenuItem, FormControl } from "@material-ui/core";
-import SaveIcon from '@material-ui/icons/Save';
-import AddIcon from '@material-ui/icons/Add';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
-import { Typography } from '@material-ui/core';
 import {
+    Button,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Typography
+} from "@material-ui/core";
+
+import { AppDispatch } from '../../../app/store';
+import {
+    editMultiProfile,
     fetchAsyncCreateMultiProfile,
     fetchAsyncUpdateMultiProfile,
+    handleDisplayStatus,
     initialState,
     selectEditedMultiProfile,
-    editMultiProfile,
     selectMultiProfile,
-    selectMultiProfiles,
-    handleDisplayStatus,
-    selectIsDisplayed
 } from './profileSlice';
-import styles from './Profile.module.css';
-import { langCategoryObj } from '../../app/constant';
-import commonStyles from '../../assets/Style.module.css';
+import commonStyles from '../../../assets/Style.module.css';
+import customStyles from './Profile.module.css';
+import { langCategoryObj } from '../../../app/constant';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -46,11 +50,11 @@ const MultiProfileEdit: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const editedMultiProfile = useSelector(selectEditedMultiProfile);
-    const multiProfiles = useSelector(selectMultiProfiles);
 
     const isDisabled: boolean = (editedMultiProfile.lang.length === 0 || editedMultiProfile.username.length === 0 || editedMultiProfile.selfIntro.length === 0 ||
                                 editedMultiProfile.addressPrefecture.length === 0 || editedMultiProfile.addressCity.length === 0 || editedMultiProfile.addressStreet.length === 0 ||
                                 editedMultiProfile.entranceFee.length === 0 || editedMultiProfile.businessHours.length === 0 || editedMultiProfile.holiday.length === 0);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const name = e.target.name;
@@ -94,7 +98,7 @@ const MultiProfileEdit: React.FC = () => {
     };
 
     return (
-        <div className={styles.multi_profile_display_wrapper}>
+        <div className={customStyles.multi_profile_display_wrapper}>
             <Typography variant="subtitle1">言語プロフィール編集</Typography>
             <div className={commonStyles.spacer__small} />
             <FormControl className={classes.formControl}>
@@ -198,7 +202,7 @@ const MultiProfileEdit: React.FC = () => {
                 onChange={handleInputChange}
             />
             <div className={commonStyles.spacer__medium} />
-            <div className={styles.basic_edit_btn_wrapper}>
+            <div className={customStyles.basic_edit_btn_wrapper}>
                 <Button
                     variant="outlined"
                     color="primary"

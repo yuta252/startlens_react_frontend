@@ -1,34 +1,38 @@
 import React, { useState } from 'react'
-
-import { Typography } from '@material-ui/core'
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, Table, TableHead, TableCell, TableRow, TableBody } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core'
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
 
-import { langCategoryObj } from '../../app/constant';
-import { selectMultiProfiles,
-    selectEditedMultiProfile,
-    selectSelectedMultiProfile,
+import { AppDispatch } from '../../../app/store';
+import {
     editMultiProfile,
-    selectMultiProfile,
-    initialState,
     fetchAsyncDeleteMultiProfile,
     handleDisplayStatus,
-    selectIsDisplayed
+    initialState,
+    selectMultiProfile,
+    selectMultiProfiles,
 } from './profileSlice';
-import styles from './Profile.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { AppDispatch } from '../../app/store';
-import { READ_MULTI_PROFILE } from '../types';
+import commonStyles from '../../../assets/Style.module.css';
+import customStyles from './Profile.module.css';
+import { READ_MULTI_PROFILE } from '../../types';
+import { langCategoryObj } from '../../../app/constant';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -46,8 +50,6 @@ const useStyles = makeStyles( (theme: Theme) => ({
         width: '80px',
     }
 }));
-
-
 
 const MultiProfileList: React.FC = () => {
     const classes = useStyles();
@@ -76,8 +78,8 @@ const MultiProfileList: React.FC = () => {
     }
 
     return (
-        <div className={styles.multi_profile_list_wrapper}>
-            <div className={styles.multi_profile_list_header}>
+        <div className={customStyles.multi_profile_list_wrapper}>
+            <div className={customStyles.multi_profile_list_header}>
                 <Typography variant="subtitle1">言語別プロフィール一覧</Typography>
                 <Button
                     variant="contained"
@@ -126,7 +128,7 @@ const MultiProfileList: React.FC = () => {
                                 </TableCell>
                                 <TableCell align="center">
                                     <button
-                                        className={styles.multi_profile_icon}
+                                        className={customStyles.multi_profile_icon}
                                         onClick={() => {
                                             dispatch(editMultiProfile(row))
                                             dispatch(handleDisplayStatus(false))
@@ -135,7 +137,7 @@ const MultiProfileList: React.FC = () => {
                                         <EditIcon />
                                     </button>
                                     <button
-                                        className={styles.multi_profile_icon}
+                                        className={customStyles.multi_profile_icon}
                                         onClick={() => handleOpen()}
                                     >
                                         <DeleteIcon />
@@ -167,7 +169,7 @@ const MultiProfileList: React.FC = () => {
                     </TableBody>
                 </Table>
             ) : (
-                <div className={styles.multi_profile_no_content}>
+                <div className={customStyles.multi_profile_no_content}>
                     <span>登録情報はありません。</span>
                 </div>
             )}

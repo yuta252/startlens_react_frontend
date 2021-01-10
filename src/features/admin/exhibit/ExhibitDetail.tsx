@@ -1,48 +1,51 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, Avatar, TextField, InputLabel, MenuItem, FormControl, Select, Snackbar } from '@material-ui/core';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
-import { Typography } from '@material-ui/core';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Button,
+    Divider,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControl,
+    Grid,
+    MenuItem,
+    InputLabel,
+    Paper,
+    Select,
+    TextField,
+    Typography
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 
-import { 
-    selectSelectedMultiExhibit,
-    selectIsDisplayed,
-    initialState,
+import { AppDispatch } from '../../../app/store';
+import {
     editMultiExhibit,
-    selectEditedMultiExhibit,
-    selectSelectedPicture,
     fetchAsyncCreateMultiExhibit,
+    fetchAsyncDeleteMultiExhibit,
     fetchAsyncUpdateMultiExhibit,
-    fetchAsyncDeleteMultiExhibit
+    initialState,
+    selectEditedMultiExhibit,
+    selectIsDisplayed,
+    selectSelectedMultiExhibit,
+    selectSelectedPicture,
 } from './exhibitSlice';
 import PictureDisplay from './PictureDisplay';
 import PictureEdit from './PictureEdit';
 import customStyles from './Exhibit.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import {
-    MULTI_EXHIBIT
-} from '../types';
-import { langCategoryObj } from '../../app/constant';
+import commonStyles from '../../../assets/Style.module.css';
+import { MULTI_EXHIBIT } from '../../types';
+import { langCategoryObj } from '../../../app/constant';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
@@ -91,19 +94,18 @@ const useStyles = makeStyles( (theme: Theme) => ({
 const ExhibitDetail: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
-    const history = useHistory();
-    const handleLink = (path: string) => history.push(path);
-    const selectedMultiExhibit = useSelector(selectSelectedMultiExhibit);
+
     const editedMultiExhibit = useSelector(selectEditedMultiExhibit);
-    const selectPicture = useSelector(selectSelectedPicture)
     const isDisplayed = useSelector(selectIsDisplayed)
+    const selectedMultiExhibit = useSelector(selectSelectedMultiExhibit);
+    const selectPicture = useSelector(selectSelectedPicture)
+
     const [open, setOpen] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
-
-    const isDisabled: boolean = (editedMultiExhibit.lang.length === 0 || editedMultiExhibit.name.length === 0 || 
-        editedMultiExhibit.description.length === 0);
-
     const [expanded, setExpanded] = React.useState<number | false>(false);
+
+    const isDisabled: boolean = (editedMultiExhibit.lang.length === 0 || editedMultiExhibit.name.length === 0 ||
+        editedMultiExhibit.description.length === 0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -310,7 +312,7 @@ const ExhibitDetail: React.FC = () => {
                                     キャンセル
                                 </Button>
                                 <Button
-                                    onClick={() => editedMultiExhibit.id ? updateMultiExhibitAction() : createMultiExhibitAction()} 
+                                    onClick={() => editedMultiExhibit.id ? updateMultiExhibitAction() : createMultiExhibitAction()}
                                     disabled={isDisabled} color="primary"
                                 >
                                     {editedMultiExhibit.id ? "更新" : "登録"}

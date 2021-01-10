@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
 import { Link, useHistory } from 'react-router-dom';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, Avatar, TextField, InputLabel, MenuItem, FormControl, Select, Snackbar } from '@material-ui/core';
+import {
+    Avatar,
+    Button,
+    Divider,
+    FormControl,
+    Grid,
+    MenuItem,
+    Paper,
+    InputLabel,
+    Select,
+    Snackbar,
+    TextField,
+    Typography
+} from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from '../../app/store';
-import { Typography } from '@material-ui/core';
 
+import { AppDispatch } from '../../../app/store';
 import { fetchAsyncCreateExhibit } from './exhibitSlice';
+import commonStyles from '../../../assets/Style.module.css';
 import customStyles from './Exhibit.module.css';
-import commonStyles from '../../assets/Style.module.css';
-import { POST_EXHIBIT } from '../types';
-import { langCategoryObj } from '../../app/constant';
+import { POST_EXHIBIT } from '../../types';
+import { langCategoryObj } from '../../../app/constant';
 
 
 function Alert(props: AlertProps) {
@@ -61,18 +70,20 @@ const useStyles = makeStyles( (theme: Theme) => ({
     },
 }));
 
-
 const ExhibitNew: React.FC = () => {
     const classes = useStyles();
     const history = useHistory();
-    const handleLink = (path: string) => history.push(path);
     const dispatch: AppDispatch = useDispatch();
+
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
     const [inputPost, setInputPost] = useState({lang: "", name: "", description: ""})
 
-    const isDisabled: boolean = (inputPost.lang.length === 0 || inputPost.name.length === 0 || 
+    const handleLink = (path: string) => history.push(path);
+
+    const isDisabled: boolean = (inputPost.lang.length === 0 || inputPost.name.length === 0 ||
                                 inputPost.description.length === 0 || images.length === 0);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const name = e.target.name;
@@ -110,9 +121,6 @@ const ExhibitNew: React.FC = () => {
         // convert from fileList to Array list
         const files: File[] = Array.from(fileList);
         files.map( (file: File) => {
-            console.log(file);
-            console.log(file.name);
-            console.log(file.type);
             // validation: jpg and png format is permitted to upload as an image
             if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
                 console.log("validation failed")
@@ -150,6 +158,7 @@ const ExhibitNew: React.FC = () => {
             reader.onerror = (error) => {
                 console.log("error: cannot read any files");
             }
+            return false;
         })
     }
 
@@ -161,7 +170,7 @@ const ExhibitNew: React.FC = () => {
             return false
         }
         if (fetchAsyncCreateExhibit.fulfilled.match(result)) {
-            handleLink('/exhibit');
+            handleLink('/admin/exhibit');
         }
     }
 
