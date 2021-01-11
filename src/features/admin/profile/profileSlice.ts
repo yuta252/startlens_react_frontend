@@ -158,7 +158,8 @@ export const profileSlice = createSlice({
                 return {
                     ...state,
                     multiProfiles: [action.payload, ...state.multiProfiles],
-                    editedProfiles: initialState.editedMultiProfile
+                    editedMultiProfile: initialState.editedMultiProfile,
+                    selectedMultiProfile: action.payload
                 }
             }
         );
@@ -170,8 +171,8 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.map( (multiProfile) =>
                         multiProfile.id === action.payload.id ? action.payload : multiProfile
                     ),
-                    editedProfiles: initialState.editedMultiProfile,
-                    selectedProfiles: action.payload,
+                    editedMultiProfile: initialState.editedMultiProfile,
+                    selectedMultiProfile: action.payload,
                 }
             }
         );
@@ -183,8 +184,8 @@ export const profileSlice = createSlice({
                     multiProfiles: state.multiProfiles.filter( (multiProfile) =>
                         multiProfile.id !== action.payload
                     ),
-                    editedProfiles: initialState.editedMultiProfile,
-                    selectedProfiles: initialState.selectedMultiProfile,
+                    editedMultiProfile: initialState.editedMultiProfile,
+                    selectedMultiProfile: initialState.selectedMultiProfile,
                 }
             }
         );

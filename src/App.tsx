@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { fetchAsyncGetUserInfo } from './features/admin/auth/authSlice';
 import { fetchAsyncGetMultiProfile } from './features/admin/profile/profileSlice';
 import { fetchAsyncGetExhibits } from './features/admin/exhibit/exhibitSlice';
+import { fetchAsyncGetSpots } from './features/user/spot/spotSlice';
 
 import { AppDispatch } from './app/store';
 import Router from './routes/Router';
@@ -14,6 +15,7 @@ import { useDispatch } from "react-redux";
 import AdminHeader from './components/admin/Header/Header';
 import AdminSideNavigator from './components/admin/SideNavigator/SideNavigator';
 import UserHeader from './components/user/Header/Header';
+import UserFooter from './components/user/Footer/Footer';
 
 
 const useStyles = makeStyles( (theme) => ({
@@ -22,7 +24,7 @@ const useStyles = makeStyles( (theme) => ({
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
-        flexGrow: 1,
+        FlexGlow: 1,
         height: '100vh',
         overflow: 'auto',
     },
@@ -54,7 +56,7 @@ const App: React.FC = () => {
                     }
                 }
             }else {
-                return false;
+                await dispatch(fetchAsyncGetSpots({items: 3}))
             }
         };
         fetchBootLoader();

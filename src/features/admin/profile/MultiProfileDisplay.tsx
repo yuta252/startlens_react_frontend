@@ -96,7 +96,7 @@ const MultiProfileDisplay: React.FC = () => {
                                     <strong>休業日</strong>
                                 </TableCell>
                                 <TableCell>
-                                    {selectedMultiProfile.businessHours}
+                                    {selectedMultiProfile.holiday}
                                 </TableCell>
                             </TableRow>
                         </TableBody>

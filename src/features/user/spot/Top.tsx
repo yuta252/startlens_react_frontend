@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
@@ -15,8 +16,14 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
+import { AppDispatch } from '../../../app/store';
+import {
+    fetchAsyncGetSpots
+} from './spotSlice';
+import SpotCard from './SpotCard';
 import { countryCategoryObj, majorCategoryChipObj } from '../../../app/constant';
 import customStyles from './Top.module.css';
+
 
 const useStyles = makeStyles((theme: Theme) => ({
     image: {
@@ -184,12 +191,27 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Top: React.FC = () => {
     const classes = useStyles();
+    const dispatch: AppDispatch = useDispatch();
 
-    const searchCountryAction = () => {
-        console.log("clicked")
+    const [query, setQuery] = useState("");
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setQuery(value);
+    };
+
+    const searchQueryAction = async () => {
+        await dispatch(fetchAsyncGetSpots({query: query}));
+        console.log("query is clicked")
     }
 
-    const searchCategoryAction = () => {
+    const searchCountryAction = async (prefecture: string) => {
+        await dispatch(fetchAsyncGetSpots({prefecture: prefecture}));
+        console.log("country is clicked")
+    }
+
+    const searchCategoryAction = async (category: number) => {
+        await dispatch(fetchAsyncGetSpots({category: category}));
         console.log("category action is clicked")
     }
 
@@ -216,12 +238,15 @@ const Top: React.FC = () => {
                     <FormControl fullWidth variant="outlined">
                         <OutlinedInput
                             startAdornment={<InputAdornment position="start"><SearchIcon className={classes.searchIcon} /></InputAdornment>}
+                            value={query}
+                            onChange={handleInputChange}
                         />
                     </FormControl>
                     <Button
                         variant="contained"
                         color="primary"
                         className={classes.searchButton}
+                        onClick={searchQueryAction}
                         disableElevation
                     >
                         検索
@@ -233,28 +258,28 @@ const Top: React.FC = () => {
                     <Typography variant="h6">場所から探す</Typography>
                     <Grid container>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCountryAction("東京")}>
                                 <div className={classes.imageTokyo}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>東京</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCountryAction("大阪")}>
                                 <div className={classes.imageOsaka}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>大阪</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCountryAction("京都")}>
                                 <div className={classes.imageKyoto}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>京都</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCountryAction("名古屋")}>
                                 <div className={classes.imageNagoya}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>名古屋</div>
@@ -269,7 +294,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>北海道・東北</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.tohoku.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -277,7 +302,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>関東</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.kanto.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -285,7 +310,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>中部</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.chubu.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -293,7 +318,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>関西</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.kansai.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -301,7 +326,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>中国・四国</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.chuboku.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -309,7 +334,7 @@ const Top: React.FC = () => {
                             <Typography variant="subtitle2"><strong>九州</strong></Typography>
                             <ul className={customStyles.other_area_list}>
                                 {countryCategoryObj.kyusyu.map( (country, index) =>
-                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction()}>{country}</Link></li>
+                                    <li key={index}><Link variant="body2" color="secondary" onClick={ () => searchCountryAction(country)}>{country}</Link></li>
                                 )}
                             </ul>
                         </Grid>
@@ -319,28 +344,28 @@ const Top: React.FC = () => {
                     <Typography variant="h6">カテゴリーから探す</Typography>
                     <Grid container>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCategoryAction(22)}>
                                 <div className={classes.imageTemple}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>神社・寺院・教会</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCategoryAction(31)}>
                                 <div className={classes.imageThemePark}></div>
                                 <div className={classes.imageCountryCover}></div>
-                                <div className={classes.imageCountryText}>テーマ公園・テーマ施設</div>
+                                <div className={classes.imageCountryText}>テーマ施設</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
+                            <Link variant="button" onClick={ () => searchCategoryAction(27)}>
                                 <div className={classes.imageBuilding}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>建造物</div>
                             </Link>
                         </Grid>
                         <Grid item xs={12} sm={3} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction() }>
+                            <Link variant="button" onClick={ () => searchCategoryAction(32) }>
                                 <div className={classes.imageHotSpring}></div>
                                 <div className={classes.imageCountryCover}></div>
                                 <div className={classes.imageCountryText}>温泉</div>
@@ -348,27 +373,17 @@ const Top: React.FC = () => {
                         </Grid>
                         <div className={customStyles.other_category_wrapper}>
                             {Object.keys(majorCategoryChipObj).map( (key) => (
-                                <Chip key={key} label={`${majorCategoryChipObj[Number(key)]}`} variant="outlined" onClick={ () => searchCategoryAction() } className={classes.chip}/>
+                                <Chip key={key} label={`${majorCategoryChipObj[Number(key)]}`} variant="outlined" onClick={ () => searchCategoryAction(Number(key)) } className={classes.chip}/>
                             ))}
                         </div>
                     </Grid>
                 </div>
                 <div className={customStyles.category_content_wrapper}>
                     <Typography variant="h6">新着情報</Typography>
-                    <Grid container>
-                        <Grid item xs={12} sm={4} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
-                                <div className={classes.imageTemple}></div>
-                                <div className={classes.imageCountryCover}></div>
-                                <div className={classes.imageCountryText}>神社・寺院・教会</div>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={12} sm={8} className={classes.countryContent}>
-                            <Link variant="button" onClick={ () => searchCountryAction()}>
-                                観光地名
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    <div className={customStyles.new_spot_wrapper}>
+                        {}
+                        <SpotCard />
+                    </div>
                 </div>
             </Container>
         </>
