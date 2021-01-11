@@ -163,3 +163,10 @@ export interface EXHIBIT_PAGINATE_INDEX {
         params: PARAMS;
     }
 }
+
+/* authUserSlice.ts */
+export interface AUTH_USER_STATE {
+    error: ERROR;
+    isLoginView: boolean;
+    isLoading: boolean;
+}

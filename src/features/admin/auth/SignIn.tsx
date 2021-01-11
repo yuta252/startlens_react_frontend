@@ -71,8 +71,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const SignIn: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
+
     const error = useSelector(selectError);
     const isLoading = useSelector(selectIsLoading);
+
     const [credential, setCredential] = useState({ email: "", password: "" });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +93,13 @@ const SignIn: React.FC = () => {
         const result = await dispatch(fetchAsyncLogin(credential));;
         // TODO: サーバーでのレスポンスエラー処理
         if (fetchAsyncLogin.rejected.match(result)) {
+            console.log(result)
+            dispatch(toggleLoading());
             dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードに誤りがあります。" }))
             return false
         }
         if (fetchAsyncLogin.fulfilled.match(result)) {
+            dispatch(toggleLoading());
             window.location.href = "/admin/dashboard";
         }
     };

@@ -8,6 +8,9 @@ import Dashboard from '../features/admin/dashboard/Dashboard';
 import Exhibit from '../features/admin/exhibit/Exhibit';
 import ExhibitNew from '../features/admin/exhibit/ExhibitNew';
 import ExhibitDetail from '../features/admin/exhibit/ExhibitDetail';
+import UserSignIn from '../features/user/auth/SignIn';
+import UserSignUp from '../features/user/auth/SignUp';
+import Top from '../features/user/sight/Top';
 
 import PrivateRouteUser from './PrivateRouteUser';
 import PrivateRouteAdmin from './PrivateRouteAdmin';
@@ -16,6 +19,9 @@ import NotFound from "../templates/NotFound";
 const Router = () => {
     return (
         <Switch>
+            <Route exect path={"/"} component={Top} />
+            <Route exact path={"/signin"} component={UserSignIn} />
+            <Route exact path={"/signup"} component={UserSignUp} />
             <Route exact path={"/admin/signin"} component={SignIn} />
             <Route exact path={"/admin/signup"} component={SignUp} />
             <PrivateRouteAdmin exact path={"/admin/profile"} component={Profile} />
