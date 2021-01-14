@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux";
 import AdminHeader from './components/admin/Header/Header';
 import AdminSideNavigator from './components/admin/SideNavigator/SideNavigator';
 import UserHeader from './components/user/Header/Header';
-import UserFooter from './components/user/Footer/Footer';
 
 
 const useStyles = makeStyles( (theme) => ({
@@ -24,7 +23,7 @@ const useStyles = makeStyles( (theme) => ({
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
-        FlexGlow: 1,
+        flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
     },

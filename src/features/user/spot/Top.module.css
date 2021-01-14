@@ -51,5 +51,10 @@
 
 .like_btn_wrapper {
     padding: 0px 8px;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search_result_wrapper {
+    width: 100%;
 }

@@ -119,7 +119,7 @@ const Exhibit: React.FC = () => {
                             size="small"
                             className={classes.addExhibitButton}
                             component={Link}
-                            to="/exhibit/new"
+                            to="/admin/exhibit/new"
                             disableElevation
                         >
                             新規登録

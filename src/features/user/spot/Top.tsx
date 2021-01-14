@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
@@ -192,6 +193,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Top: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
+    const history = useHistory();
+    const handleLink = (path: string) => history.push(path);
 
     const [query, setQuery] = useState("");
 
@@ -202,16 +205,19 @@ const Top: React.FC = () => {
 
     const searchQueryAction = async () => {
         await dispatch(fetchAsyncGetSpots({query: query}));
+        handleLink('/spots/search');
         console.log("query is clicked")
     }
 
     const searchCountryAction = async (prefecture: string) => {
         await dispatch(fetchAsyncGetSpots({prefecture: prefecture}));
+        handleLink('/spots/search');
         console.log("country is clicked")
     }
 
     const searchCategoryAction = async (category: number) => {
         await dispatch(fetchAsyncGetSpots({category: category}));
+        handleLink('/spots/search');
         console.log("category action is clicked")
     }
 
@@ -381,7 +387,6 @@ const Top: React.FC = () => {
                 <div className={customStyles.category_content_wrapper}>
                     <Typography variant="h6">新着情報</Typography>
                     <div className={customStyles.new_spot_wrapper}>
-                        {}
                         <SpotCard />
                     </div>
                 </div>
