@@ -1,0 +1,78 @@
+.basic_profile_th {
+    padding: 8px;
+    text-align: left;
+    min-width: 180px;
+}
+
+.basic_profile_td {
+    padding: 8px;
+    text-align: left;
+    min-width: 180px;
+}
+
+.basic_edit_btn_wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.thumbnail_edit_wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+.multi_profile_list_header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.multi_profile_list_wrapper {
+    padding: 8px 48px 8px 16px;
+}
+
+.multi_profile_display_wrapper {
+    padding: 8px 16px 8px 48px;
+}
+
+.multi_profile_no_content {
+    text-align: center;
+    font-size: 16px;
+}
+
+.multi_profile_icon {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    color: dimgray;
+    cursor: pointer;
+}
+
+.multi_profile_intro_wrapper {
+    margin: 16px 0;
+    padding: 16px;
+    font-size: 14px;
+    min-height: 200px;
+}
+
+.google_map_wrapper {
+    width: 100%;
+    height: 400px;
+}
+
+.google_map_pin {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: -10px;
+    top: -10px;
+    border: 5px solid #f33336;
+    border-radius: 20px;
+    background-color: white;
+    text-align: center;
+    color: #3f51b5;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 4px;
+}

@@ -1,13 +1,16 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
-import profileReducer from '../features/profile/profileSlice';
-import exhibitReducer from '../features/exhibit/exhibitSlice';
+
+import authReducer from '../features/admin/auth/authSlice';
+import exhibitReducer from '../features/admin/exhibit/exhibitSlice';
+import profileReducer from '../features/admin/profile/profileSlice';
+import spotReducer from '../features/user/spot/spotSlice';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
         profile: profileReducer,
         exhibit: exhibitReducer,
+        spot: spotReducer,
     },
 });
 
