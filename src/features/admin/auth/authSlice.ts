@@ -7,8 +7,10 @@ import {
     CRED,
     ERROR,
     ERROR_RESPONSE,
+    GEO_API_RESPONSE,
     JWT,
     LOGIN_USER,
+    POST_GEO,
     POST_PROFILE,
     PROFILE,
     THUMBNAIL_BASE64,
@@ -65,7 +67,7 @@ export const fetchAsyncGetUserInfo = createAsyncThunk(
 
 export const fetchAsyncUpdateProfile = createAsyncThunk(
     "profile/updateProfile",
-    async (profile: POST_PROFILE) => {
+    async (profile: POST_PROFILE | POST_GEO) => {
         const res = await axios.patch<PROFILE>(
             `${process.env.REACT_APP_API_URL}/api/v1/profiles/1`,
             { "profile": profile },
@@ -98,6 +100,17 @@ export const fetchAsyncUpdateThumbnail = createAsyncThunk(
 );
 
 
+export const fetchAsyncGetGeocodingInfo = createAsyncThunk(
+    "profile/getGeocodingInfo",
+    async (address: string) => {
+        const res = await axios.get<GEO_API_RESPONSE>(
+            `${process.env.REACT_APP_GEOCODING_API_URL}address=${address}&key=${process.env.REACT_APP_GEOCODING_API_KEY}`,
+        );
+        console.log(res.data)
+        return res.data
+    }
+);
+
 const initialState: AUTH_STATE = {
     error: {
         isError: false,
@@ -117,7 +130,9 @@ const initialState: AUTH_STATE = {
             companySite: "",
             thumbnail: {
                 url: "",
-            }
+            },
+            latitude: null,
+            longitude: null
         },
     },
     editedProfile: {
@@ -188,6 +203,7 @@ export const authSlice = createSlice({
         builder.addCase(
             fetchAsyncUpdateProfile.fulfilled,
             (state, action: PayloadAction<PROFILE>) => {
+                console.log("fetchupdateprofile", action.payload)
                 return {
                     ...state,
                     loginUser: {
@@ -205,6 +221,23 @@ export const authSlice = createSlice({
                     loginUser: {
                         ...state.loginUser,
                         profile: action.payload
+                    }
+                }
+            }
+        );
+        builder.addCase(
+            fetchAsyncGetGeocodingInfo.fulfilled,
+            (state, action: PayloadAction<GEO_API_RESPONSE>) => {
+                const results = action.payload.results;
+                return {
+                    ...state,
+                    loginUser: {
+                        ...state.loginUser,
+                        profile: {
+                            ...state.loginUser.profile,
+                            latitude: results[0]?.geometry.location.lat,
+                            longitude: results[0]?.geometry.location.lng
+                        }
                     }
                 }
             }

@@ -36,12 +36,19 @@ export interface PROFILE {
     thumbnail: {
         url: string;
     }
+    latitude: number | null;
+    longitude: number | null;
 }
 
 export interface POST_PROFILE {
     majorCategory: number;
     telephone: string;
     companySite: string;
+}
+
+export interface POST_GEO {
+    latitude: number;
+    longitude: number;
 }
 
 export interface LOGIN_USER {
@@ -52,6 +59,19 @@ export interface LOGIN_USER {
 
 export interface THUMBNAIL_BASE64 {
     imageFile: string;
+}
+
+export interface GEO_API_RESPONSE {
+    results: [
+        {
+            geometry: {
+                location: {
+                    lat: number;
+                    lng: number;
+                }
+            }
+        }
+    ]
 }
 
 export interface AUTH_STATE {

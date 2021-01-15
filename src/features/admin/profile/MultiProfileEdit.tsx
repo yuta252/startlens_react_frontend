@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
     Button,
+    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -22,12 +23,25 @@ import {
     selectEditedMultiProfile,
     selectMultiProfile,
 } from './profileSlice';
+import { 
+    fetchAsyncGetGeocodingInfo,
+    fetchAsyncUpdateProfile,
+    selectLoginUser
+} from '../auth/authSlice';
+import GoogleMapComponent from './GoogleMapComponent';
 import commonStyles from '../../../assets/Style.module.css';
 import customStyles from './Profile.module.css';
 import { langCategoryObj } from '../../../app/constant';
 
 
 const useStyles = makeStyles( (theme: Theme) => ({
+    getGeocodingButton: {
+        width: "180px",
+        padding: theme.spacing(1),
+        margin: theme.spacing(2),
+        color: "white",
+        fontWeight: theme.typography.fontWeightBold,
+    },
     saveMultiProfileButton: {
         width: "120px",
         padding: theme.spacing(1),
@@ -50,10 +64,15 @@ const MultiProfileEdit: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const editedMultiProfile = useSelector(selectEditedMultiProfile);
+    const loginUser = useSelector(selectLoginUser);
 
-    const isDisabled: boolean = (editedMultiProfile.lang.length === 0 || editedMultiProfile.username.length === 0 || editedMultiProfile.selfIntro.length === 0 ||
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    let isDisabled: boolean = (editedMultiProfile.lang.length === 0 || editedMultiProfile.username.length === 0 || editedMultiProfile.selfIntro.length === 0 ||
                                 editedMultiProfile.addressPrefecture.length === 0 || editedMultiProfile.addressCity.length === 0 || editedMultiProfile.addressStreet.length === 0 ||
                                 editedMultiProfile.entranceFee.length === 0 || editedMultiProfile.businessHours.length === 0 || editedMultiProfile.holiday.length === 0);
+    let isDisabledFetchGeo: boolean = false;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -96,6 +115,28 @@ const MultiProfileEdit: React.FC = () => {
             dispatch(handleDisplayStatus(true));
         }
     };
+
+    const getGeocodingAction = async () => {
+        isDisabledFetchGeo = true;
+        setIsLoading(true);
+
+        const address: string = editedMultiProfile.addressPrefecture + editedMultiProfile.addressCity + editedMultiProfile.addressStreet
+        const result = await dispatch(fetchAsyncGetGeocodingInfo(address));
+        if (fetchAsyncGetGeocodingInfo.rejected.match(result)) {
+            setIsLoading(false);
+            setError("位置情報の取得に失敗しました。もう一度お試しください。")
+            console.log("Geocoding API error happened.")
+            return false
+        }
+        if (fetchAsyncGetGeocodingInfo.fulfilled.match(result)) {
+            // update database with latitude and longitude
+            setIsLoading(false);
+            setError("")
+            isDisabledFetchGeo = false;
+            const location = result.payload.results[0].geometry.location
+            await dispatch(fetchAsyncUpdateProfile({latitude: Number(location.lat), longitude: Number(location.lng)}))
+        }
+    }
 
     return (
         <div className={customStyles.multi_profile_display_wrapper}>
@@ -156,6 +197,19 @@ const MultiProfileEdit: React.FC = () => {
                 size="small"
                 onChange={handleInputChange}
             />
+            <div className={commonStyles.spacer__medium} />
+            { isLoading && <CircularProgress /> }
+            {loginUser.profile.latitude && loginUser.profile.longitude && (<GoogleMapComponent />)}
+            <Button
+                variant="contained"
+                color="primary"
+                className={classes.getGeocodingButton}
+                onClick={() => getGeocodingAction()}
+                disabled={isDisabledFetchGeo}
+                disableElevation
+            >
+                位置情報を取得
+            </Button>
             <div className={commonStyles.spacer__medium} />
             <TextField
                 variant="outlined"
