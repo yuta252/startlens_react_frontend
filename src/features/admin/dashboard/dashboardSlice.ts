@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { RootState } from '../../../app/store';
 import {
+    BIRTH,
     STATISTICS,
     STATISTICS_STATE,
     VISITORS
@@ -52,6 +53,12 @@ export const initialState: STATISTICS_STATE = {
     displayVisitors: {
         "": 0,
     },
+    displayGeneration: {
+        "": 0,
+    },
+    displayCountry: {
+        "": 0,
+    },
     duration: 2,
 }
 
@@ -61,6 +68,12 @@ export const dashboardSlice = createSlice({
     reducers: {
         displayVisitorsData(state, action: PayloadAction<VISITORS>) {
             state.displayVisitors = action.payload;
+        },
+        displayGenerationData(state, action: PayloadAction<BIRTH>) {
+            state.displayGeneration = action.payload;
+        },
+        displayCountryData(state, action: PayloadAction<BIRTH>) {
+            state.displayCountry = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -78,7 +91,7 @@ export const dashboardSlice = createSlice({
 });
 
 
-export const { displayVisitorsData } = dashboardSlice.actions;
+export const { displayCountryData, displayGenerationData, displayVisitorsData } = dashboardSlice.actions;
 
 export const selectVisitors = (state: RootState) => state.dashboard.data.visitors;
 export const selectSex = (state: RootState) => state.dashboard.data.sex;
@@ -86,5 +99,7 @@ export const selectBirth = (state: RootState) => state.dashboard.data.birth;
 export const selectCountry = (state: RootState) => state.dashboard.data.country;
 export const selectDuration = (state: RootState) => state.dashboard.duration;
 export const selectDisplayVisitors = (state: RootState) => state.dashboard.displayVisitors;
+export const selectDisplayGeneration = (state: RootState) => state.dashboard.displayGeneration;
+export const selectDisplayCountry = (state: RootState) => state.dashboard.displayCountry;
 
 export default dashboardSlice.reducer;

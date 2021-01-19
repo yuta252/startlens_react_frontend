@@ -87,3 +87,8 @@ export const hourMapObj: {[key: string] : string} = {
     "18": "18:00", "19": "19:00", "20": "20:00",
     "21": "21:00", "22": "22:00", "23": "23:00"
 }
+
+export const worldCountryObj: {[key: string]: string} = {
+    "na": "未選択", "JP": "日本", "KR": "韓国", "TW": "台湾", "CN": "中国",
+    "US": "アメリカ", "GB": "イギリス"
+}

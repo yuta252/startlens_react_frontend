@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Line, Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 import { AppDispatch } from '../../../../app/store';
 import {
@@ -10,7 +10,7 @@ import {
     selectVisitors,
 } from '../dashboardSlice';
 import { hourMapObj } from '../../../../app/constant';
-import { VISITORS } from "../../../types";
+import { VISITORS } from '../../../types';
 import customStyles from '../Dashboard.module.css';
 import { durationCategory } from '../../../../app/constant';
 
@@ -97,9 +97,10 @@ const Visitors: React.FC = () => {
                 legend: { display: false},
                 title: {
                     display: true,
-                    fontSize: 24,
+                    fontSize: 18,
                     fontStyle: 'bold',
                     padding: 10,
+                    textColor: 'rgba(0, 0, 0, 0.54)',
                     text: `来場者数 ${durationCategory[duration]}`
                 },
                 scales: {

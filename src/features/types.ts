@@ -211,5 +211,7 @@ export interface STATISTICS {
 export interface STATISTICS_STATE {
     data: STATISTICS;
     displayVisitors: VISITORS;
+    displayGeneration: BIRTH;
+    displayCountry: COUNTRY;
     duration: number;
 }

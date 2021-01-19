@@ -17,6 +17,9 @@ import {
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 
 import Visitors from './components/Visitors';
+import SexChart from './components/Sex';
+import BirthChart from './components/Birth';
+import CountryChart from './components/Country';
 import {
     fetchAsyncGetStatistics,
     selectDuration,
@@ -45,6 +48,11 @@ const useStyles = makeStyles( (theme: Theme) => ({
     },
     barContent: {
         marginTop: theme.spacing(2),
+        padding: theme.spacing(0)
+    },
+    doughnutContent: {
+        padding: theme.spacing(0, 1),
+        margin: theme.spacing(1, 0)
     }
 }));
 
@@ -89,10 +97,12 @@ const Dashboard: React.FC = () => {
         const result = await dispatch(fetchAsyncGetStatistics(duration));
         if (fetchAsyncGetStatistics.rejected.match(result)) {
             console.log("fetchStaticData error happened.")
+            handleClose();
             return false
         }
         if (fetchAsyncGetStatistics.fulfilled.match(result)) {
             console.log("fetchStaticData success.")
+            handleClose();
         }
 
     }
@@ -181,6 +191,23 @@ const Dashboard: React.FC = () => {
             <Grid container item className={classes.barContent}>
                 <Grid item xs={8} component={Card}>
                     <Visitors />
+                </Grid>
+            </Grid>
+            <Grid container item className={classes.barContent}>
+                <Grid item xs={12} md={4} className={classes.doughnutContent}>
+                    <Paper>
+                        <SexChart/>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} className={classes.doughnutContent}>
+                    <Paper>
+                        <BirthChart/>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} className={classes.doughnutContent}>
+                    <Paper>
+                        <CountryChart/>
+                    </Paper>
                 </Grid>
             </Grid>
         </Grid>
