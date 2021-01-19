@@ -6,7 +6,6 @@ import {
     AppBar,
     Badge,
     Button,
-    IconButton,
     ListItemIcon,
     ListItemText,
     MenuItem,
@@ -97,16 +96,13 @@ const Header: React.FC = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem("localJWT");
+        localStorage.removeItem("startlensAdminJWT");
         window.location.href = "/admin/signin";
     }
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar className={classes.toolBar}>
-                <IconButton>
-                    <ExitToAppIcon />
-                </IconButton>
                 <Button
                     aria-controls="customized-menu"
                     aria-haspopup="true"

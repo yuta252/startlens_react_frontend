@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 const PrivateRouteAdmin: React.FC<RouteProps> = props => {
     // permit routes access if the local storage has JWT token
-    const isSignedIn = Boolean(localStorage.localJWT)
+    const isSignedIn = Boolean(localStorage.startlensAdminJWT)
     const rest = _.omit(props, ['component']);
 
     return (

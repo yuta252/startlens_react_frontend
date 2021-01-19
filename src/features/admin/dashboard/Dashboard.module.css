@@ -1,0 +1,51 @@
+.dashboard_title_wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.all_visitors_content {
+    border-bottom: 5px solid #f57c00;
+    border-radius: 0% !important;
+    margin-right: 12px !important;
+}
+
+.today_visitors_content {
+    border-bottom: 5px solid #0288d1;
+    border-radius: 0% !important;
+}
+
+.visitor_chart_wrapper {
+    padding: 16px;
+}
+
+.sex_doughnut_wrapper {
+    padding: 16px;
+    position: relative;
+}
+
+.sex_doughnut_title {
+    position: absolute;
+    top: 50%;
+    left: 98px;
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.generation_doughnut_title {
+    position: absolute;
+    top: 50%;
+    left: 57px;
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.country_doughnut_title {
+    position: absolute;
+    top: 50%;
+    left: 72px;
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.54);
+}
