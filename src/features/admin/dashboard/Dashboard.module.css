@@ -1,0 +1,19 @@
+.dashboard_title_wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.all_visitors_content {
+    border-bottom: 5px solid #f57c00;
+    border-radius: 0% !important;
+    margin-right: 12px !important;
+}
+
+.today_visitors_content {
+    border-bottom: 5px solid #0288d1;
+    border-radius: 0% !important;
+}
+
+.visitor_chart_wrapper {
+    padding: 16px;
+}

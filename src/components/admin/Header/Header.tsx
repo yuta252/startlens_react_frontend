@@ -6,7 +6,6 @@ import {
     AppBar,
     Badge,
     Button,
-    IconButton,
     ListItemIcon,
     ListItemText,
     MenuItem,
@@ -104,9 +103,6 @@ const Header: React.FC = () => {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar className={classes.toolBar}>
-                <IconButton>
-                    <ExitToAppIcon />
-                </IconButton>
                 <Button
                     aria-controls="customized-menu"
                     aria-haspopup="true"

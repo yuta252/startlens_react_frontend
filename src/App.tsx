@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { fetchAsyncGetUserInfo } from './features/admin/auth/authSlice';
 import { fetchAsyncGetMultiProfile } from './features/admin/profile/profileSlice';
 import { fetchAsyncGetExhibits } from './features/admin/exhibit/exhibitSlice';
+import { fetchAsyncGetStatistics } from './features/admin/dashboard/dashboardSlice';
 
 import { AppDispatch } from './app/store';
 import Router from './routes/Router';
@@ -47,6 +48,7 @@ const App: React.FC = () => {
                     // load other data after user login info is loaded once
                     await dispatch(fetchAsyncGetMultiProfile());
                     await dispatch(fetchAsyncGetExhibits(1));
+                    await dispatch(fetchAsyncGetStatistics(2));
                 }
             }
         };

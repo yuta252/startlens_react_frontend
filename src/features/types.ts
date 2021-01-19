@@ -183,3 +183,33 @@ export interface EXHIBIT_PAGINATE_INDEX {
         params: PARAMS;
     }
 }
+
+/* dashboard.ts */
+export interface VISITORS {
+    [key: string]: number;
+}
+
+export interface SEX {
+    [key: string]: number;
+}
+
+export interface BIRTH {
+    [key: string]: number;
+}
+
+export interface COUNTRY {
+    [key: string]: number;
+}
+
+export interface STATISTICS {
+    visitors: VISITORS;
+    sex: SEX;
+    birth: BIRTH;
+    country: COUNTRY;
+}
+
+export interface STATISTICS_STATE {
+    data: STATISTICS;
+    displayVisitors: VISITORS;
+    duration: number;
+}
