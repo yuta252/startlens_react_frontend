@@ -57,7 +57,7 @@ export const fetchAsyncGetUserInfo = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/load`,
             {
                 headers: {
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -74,7 +74,7 @@ export const fetchAsyncUpdateProfile = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -91,7 +91,7 @@ export const fetchAsyncUpdateThumbnail = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -180,7 +180,7 @@ export const authSlice = createSlice({
         builder.addCase(
             fetchAsyncLogin.fulfilled,
             (state, action: PayloadAction<JWT>) => {
-                localStorage.setItem("localJWT", action.payload.token);
+                localStorage.setItem("startlensAdminJWT", action.payload.token);
             }
         );
         builder.addCase(

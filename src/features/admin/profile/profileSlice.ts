@@ -16,7 +16,7 @@ export const fetchAsyncGetMultiProfile = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles`,
             {
                 headers: {
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -36,7 +36,7 @@ export const fetchAsyncCreateMultiProfile = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -53,7 +53,7 @@ export const fetchAsyncUpdateMultiProfile = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -68,7 +68,7 @@ export const fetchAsyncDeleteMultiProfile = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles/${id}`,{
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             },
         );

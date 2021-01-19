@@ -97,7 +97,7 @@ const Header: React.FC = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem("localJWT");
+        localStorage.removeItem("startlensAdminJWT");
         window.location.href = "/admin/signin";
     }
 

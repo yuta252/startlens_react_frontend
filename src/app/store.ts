@@ -1,17 +1,18 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { save, load } from 'redux-localstorage-simple';
 
 import authReducer from '../features/admin/auth/authSlice';
 import exhibitReducer from '../features/admin/exhibit/exhibitSlice';
 import profileReducer from '../features/admin/profile/profileSlice';
-import spotReducer from '../features/user/spot/spotSlice';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
         profile: profileReducer,
         exhibit: exhibitReducer,
-        spot: spotReducer,
     },
+    preloadedState: load(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(save()),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

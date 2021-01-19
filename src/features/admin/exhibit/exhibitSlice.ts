@@ -20,7 +20,7 @@ export const fetchAsyncGetExhibits = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/exhibits?page=${page}`,
             {
                 headers: {
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -37,7 +37,7 @@ export const fetchAsyncCreateExhibit = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -56,7 +56,7 @@ export const fetchAsyncUpdatePicture = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -71,7 +71,7 @@ export const fetchAsyncDeleteExhibit = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/exhibits/${id}`,{
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             },
         );
@@ -89,7 +89,7 @@ export const fetchAsyncCreateMultiExhibit = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -106,7 +106,7 @@ export const fetchAsyncUpdateMultiExhibit = createAsyncThunk(
             {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             }
         );
@@ -121,7 +121,7 @@ export const fetchAsyncDeleteMultiExhibit = createAsyncThunk(
             `${process.env.REACT_APP_API_URL}/api/v1/multi_exhibits/${exhibit.id}`,{
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `${localStorage.localJWT}`,
+                    Authorization: `${localStorage.startlensAdminJWT}`,
                 },
             },
         );
