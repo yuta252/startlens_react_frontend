@@ -6,10 +6,12 @@ import {
     Avatar,
     Button,
     createStyles,
+    CircularProgress,
     Dialog,
     Divider,
     Grid,
     Paper,
+    Snackbar,
     Typography
 } from "@material-ui/core";
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -17,6 +19,7 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 import { AppDispatch } from '../../../app/store';
 import {
@@ -37,6 +40,10 @@ import ProfileDisplay from './ProfileDisplay';
 import commonStyles from '../../../assets/Style.module.css';
 import customStyles from './Profile.module.css';
 
+
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={5} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles( (theme: Theme) => ({
     title: {
@@ -132,6 +139,10 @@ const Profile: React.FC = () => {
     const isProfileEdited = useSelector(selectIsProfileEdited);
 
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [disabled, setDisabled] = useState(true);
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [message, setMessage] = useState<{type: "success" | "error", message: string}>({type: "success", message: ""});
 
     const handleOpen = () => {
         setOpen(true);
@@ -139,6 +150,13 @@ const Profile: React.FC = () => {
 
     const handleClose = () => {
         setOpen(false);
+    }
+
+    const handleMessageClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackOpen(false);
     }
 
     const handleEditThumbnail = () => {
@@ -160,10 +178,8 @@ const Profile: React.FC = () => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = (e) => {
-            console.log("reader onload")
             const image = new Image();
             image.onload = () => {
-                console.log("image onload")
                 let width = image.width;
                 let height = image.height;
                 if (width > height) {
@@ -174,16 +190,14 @@ const Profile: React.FC = () => {
                     width = Math.round(THUMBNAIL_HEIGHT * width / height );
                     height = THUMBNAIL_HEIGHT;
                 }
-                console.log("hight: ", height)
-                console.log("width: ", width)
                 let canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
                 let ctx = canvas.getContext('2d');
                 ctx?.drawImage(image, 0, 0, width, height);
                 const encodedImage = ctx?.canvas.toDataURL(file.type) as string;
-                console.log("encodedImage: ", encodedImage)
                 dispatch(editThumbnailImage({ imageFile: encodedImage }))
+                setDisabled(false);
             }
             image.src = e.target?.result as string;
         }
@@ -194,16 +208,23 @@ const Profile: React.FC = () => {
 
     const handleSaveThumbnail = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoading(true);
+        setDisabled(true);
         const result = await dispatch(fetchAsyncUpdateThumbnail(editedThumbnailImage));
         if (fetchAsyncUpdateThumbnail.rejected.match(result)) {
-            // TODO: エラーハンドリング
-            console.log(result)
+            setLoading(false);
+            setDisabled(false);
+            handleClose();
+            setMessage({type: "error", message: "投稿に失敗しました" });
+            setSnackOpen(true);
             return false
         }
         if (fetchAsyncUpdateThumbnail.fulfilled.match(result)) {
-            // TODO: editedThumbnailImageを空にする
-            console.log("thumbnail url: ", result)
+            setLoading(false);
+            setDisabled(false);
             handleClose();
+            setMessage({type: "success", message: "投稿に成功しました" });
+            setSnackOpen(true);
         }
     }
 
@@ -248,6 +269,11 @@ const Profile: React.FC = () => {
                                         <Typography gutterBottom>
                                             ファイルのサイズが1Mより小さいjpg/jpeg, png画像ファイルを選び、アップロードしてください。
                                         </Typography>
+                                        {loading && (
+                                            <div className={customStyles.thumbnail_loading}>
+                                                <CircularProgress />
+                                            </div>
+                                        )}
                                         <div className={customStyles.thumbnail_edit_wrapper}>
                                             {editedThumbnailImage.imageFile ?
                                                 <Avatar variant="rounded" src={editedThumbnailImage.imageFile} className={classes.uploadedAvatar} alt="logo" /> :
@@ -265,11 +291,16 @@ const Profile: React.FC = () => {
                                         <Button autoFocus onClick={handleEditThumbnail} color="primary">
                                             アップロード
                                         </Button>
-                                        <Button onClick={handleSaveThumbnail} color="primary">
+                                        <Button onClick={handleSaveThumbnail} color="primary" disabled={disabled}>
                                             保存
                                         </Button>
                                     </DialogActions>
                                 </Dialog>
+                                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleMessageClose}>
+                                    <Alert onClose={handleMessageClose} severity={message.type}>
+                                        {message.message}
+                                    </Alert>
+                                </Snackbar>
                             </Grid>
                             <Grid item md={8}>
                                 {isProfileEdited ? <ProfileEdit /> : <ProfileDisplay />}

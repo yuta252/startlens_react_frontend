@@ -5,6 +5,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
     Avatar,
     Button,
+    CircularProgress,
     Grid,
     Snackbar
 } from '@material-ui/core';
@@ -51,8 +52,7 @@ const useStyles = makeStyles( (theme: Theme) => ({
         color: "white",
         padding: theme.spacing(1),
         margin: theme.spacing(2),
-        fontWeight: theme.typography.fontWeightBold,
-        backgroundColor: theme.palette.secondary.main
+        fontWeight: theme.typography.fontWeightBold
     }
 }));
 
@@ -60,18 +60,19 @@ const PictureEdit: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
     const selectedPicture = useSelector(selectSelectedPicture);
-    const [errorOpen, setErrorOpen] = useState(false);
-    const [successOpen, setSuccessOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [disabled, setDisabled] = useState(false);
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [message, setMessage] = useState<{type: "success" | "error", message: string}>({type: "success", message: ""});
     const [images, setImages] = useState<string[]>([]);
 
     const isDisabled: boolean = (images.length === 0);
 
-    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    const handleMessageClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
-        setErrorOpen(false)
-        setSuccessOpen(false)
+        setSnackOpen(false);
     }
 
     const uploadPictureAction = () => {
@@ -108,8 +109,6 @@ const PictureEdit: React.FC = () => {
                         width = Math.round(THUMBNAIL_HEIGHT * width / height );
                         height = THUMBNAIL_HEIGHT;
                     }
-                    console.log("hight: ", height)
-                    console.log("width: ", width)
                     let canvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
@@ -130,20 +129,32 @@ const PictureEdit: React.FC = () => {
 
     const savePictureAction = async () => {
         const updateData: POST_PICTURE = {exhibitId: selectedPicture.id, imageFile: images}
+        setLoading(true);
+        setDisabled(true);
         const result = await dispatch(fetchAsyncUpdatePicture(updateData));
         if (fetchAsyncUpdatePicture.rejected.match(result)) {
-            setErrorOpen(true);
+            setLoading(false);
+            setDisabled(false);
+            setMessage({type: "error", message: "投稿に失敗しました" });
+            setSnackOpen(true);
             return false
         }
         if (fetchAsyncUpdatePicture.fulfilled.match(result)) {
-            setSuccessOpen(true);
-            dispatch(changeDisplay(true));
+            setLoading(false);
+            setDisabled(false);
+            setMessage({type: "success", message: "投稿に成功しました" });
+            setSnackOpen(true);
             setImages([]);
         }
     }
 
     return (
         <>
+            {loading && (
+                <div className={customStyles.thumbnail_loading}>
+                    <CircularProgress />
+                </div>
+            )}
             <Grid container>
                 {images.length > 0 && (
                     images.map( (image: string, index: number) => (
@@ -189,19 +200,14 @@ const PictureEdit: React.FC = () => {
                     onClick={
                         () => savePictureAction()
                     }
-                    disabled={isDisabled}
+                    disabled={isDisabled || disabled}
                     disableElevation
                 >
                     保存
                 </Button>
-                <Snackbar open={errorOpen} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error">
-                        画像の投稿が失敗しました
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={successOpen} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
-                        画像の投稿が成功しました
+                <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleMessageClose}>
+                    <Alert onClose={handleMessageClose} severity={message.type}>
+                        {message.message}
                     </Alert>
                 </Snackbar>
             </div>

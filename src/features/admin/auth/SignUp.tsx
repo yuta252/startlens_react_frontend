@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
@@ -17,10 +17,6 @@ import { AppDispatch } from "../../../app/store";
 import {
     fetchAsyncLogin,
     fetchAsyncRegister,
-    selectError,
-    selectIsLoading,
-    showError,
-    toggleLoading
 } from "./authSlice";
 import commonStyles from "../../../assets/Style.module.css";
 
@@ -71,8 +67,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 const SignUp: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
-    const error = useSelector(selectError);
-    const isLoading = useSelector(selectIsLoading);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [credential, setCredential] = useState({ email: "", password: "", confirmPassword: "" });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,29 +81,36 @@ const SignUp: React.FC = () => {
     const signUp = async () => {
         // Validation
         if (credential.email === "" || credential.password === "") {
-            dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードが未入力です" }))
+            setError("メールアドレスまたはパスワードが未入力です");
             return false
         }
 
         if (credential.password !== credential.confirmPassword) {
-            dispatch(showError({ isError: true, message: "入力された確認パスワードが一致しません。" }))
+            setError("入力された確認パスワードが一致しません");
             return false
         }
 
-        // TODO: バリデーションの追加（Emailの形式、パスワードの長さ）
-        // TODO: バリデーションエラーを画面に表示追加
-        dispatch(toggleLoading());
+        if (credential.password.length < 6) {
+            setError("パスワードは6文字以上で設定してください");
+            return false
+        }
+
+        const reg = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
+        if (!reg.test(credential.email)) {
+            setError("正しいメールアドレスのフォーマットではありません");
+            return false
+        }
+
+        setLoading(true);
         const result = await dispatch(fetchAsyncRegister({ email: credential.email, password: credential.password }));
-        // TODO: サーバーのバリデーションハンドリング
         if (fetchAsyncRegister.rejected.match(result)) {
-            console.log(result)
-            dispatch(toggleLoading());
+            setError("登録できませんでした。既に登録されている可能性があります。別のメールアドレスでお試しください");
+            setLoading(false);
             return false
         }
         if (fetchAsyncRegister.fulfilled.match(result)) {
-            dispatch(toggleLoading());
+            setLoading(false);
             await dispatch(fetchAsyncLogin({ email: credential.email, password: credential.password }));
-            // TODO:　ホーム画面への直接遷移させるか検討
             window.location.href = "/admin/dashboard";
         }
     };
@@ -114,7 +118,7 @@ const SignUp: React.FC = () => {
     return (
         <Container maxWidth="sm">
             <Paper className={classes.paper}>
-                { isLoading && <CircularProgress /> }
+                { loading && <CircularProgress /> }
                 <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />
                 <Typography variant="h5" className={classes.title} >
                     新規登録
@@ -150,7 +154,7 @@ const SignUp: React.FC = () => {
                     value={credential.confirmPassword}
                     onChange={handleInputChange}
                 />
-                { error.isError && (<span className={classes.spanError}> {error.message} </span>) }
+                { error.length !== 0 && (<span className={classes.spanError}> {error} </span>) }
                 <Button
                     variant="contained"
                     fullWidth

@@ -58,6 +58,14 @@ const useStyles = makeStyles( (theme: Theme) => ({
     formControl: {
         minWidth: "180px",
     },
+    spanError: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        color: "#d8135b",
+        marginTop: 10,
+        fontSize: "14px"
+    },
 }));
 
 const MultiProfileEdit: React.FC = () => {
@@ -94,7 +102,6 @@ const MultiProfileEdit: React.FC = () => {
     const createMultiProfileAction = async () => {
         const result = await dispatch(fetchAsyncCreateMultiProfile(editedMultiProfile));
         if (fetchAsyncCreateMultiProfile.rejected.match(result)) {
-            console.log(result)
             return false
         }
         if (fetchAsyncCreateMultiProfile.fulfilled.match(result)) {
@@ -108,7 +115,6 @@ const MultiProfileEdit: React.FC = () => {
     const updateMultiProfileAction = async () => {
         const result = await dispatch(fetchAsyncUpdateMultiProfile(editedMultiProfile));
         if (fetchAsyncUpdateMultiProfile.rejected.match(result)) {
-            console.log(result)
             return false
         }
         if (fetchAsyncUpdateMultiProfile.fulfilled.match(result)) {
@@ -200,6 +206,7 @@ const MultiProfileEdit: React.FC = () => {
             <div className={commonStyles.spacer__medium} />
             { isLoading && <CircularProgress /> }
             {loginUser.profile.latitude && loginUser.profile.longitude && (<GoogleMapComponent />)}
+            { error.length !== 0 && (<span className={classes.spanError}> {error} </span>) }
             <Button
                 variant="contained"
                 color="primary"

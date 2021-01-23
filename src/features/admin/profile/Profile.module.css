@@ -16,6 +16,12 @@
     margin: 16px 0;
 }
 
+.thumbnail_loading {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0;
+}
+
 .thumbnail_edit_wrapper {
     display: flex;
     justify-content: center;

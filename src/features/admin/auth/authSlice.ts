@@ -5,7 +5,6 @@ import { RootState } from '../../../app/store';
 import {
     AUTH_STATE,
     CRED,
-    ERROR,
     ERROR_RESPONSE,
     GEO_API_RESPONSE,
     JWT,
@@ -111,13 +110,7 @@ export const fetchAsyncGetGeocodingInfo = createAsyncThunk(
     }
 );
 
-const initialState: AUTH_STATE = {
-    error: {
-        isError: false,
-        message: ""
-    },
-    isLoginView: true,
-    isLoading: false,
+export const initialState: AUTH_STATE = {
     isProfileEdited: false,
     loginUser: {
         id: 0,
@@ -140,32 +133,15 @@ const initialState: AUTH_STATE = {
         telephone: "",
         companySite: "",
     },
-    editedProfileError: {
-        isError: false,
-        message: ""
-    },
     editedThumbnailImage: {
         imageFile: ""
     },
-    editedThumbnailError: {
-        isError: false,
-        message: ""
-    }
 };
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        toggleMode(state) {
-            state.isLoginView = !state.isLoginView;
-        },
-        showError(state, action: PayloadAction<ERROR>) {
-            state.error = action.payload;
-        },
-        toggleLoading(state) {
-            state.isLoading = !state.isLoading;
-        },
         toggleProfileEdit(state) {
             state.isProfileEdited = !state.isProfileEdited;
         },
@@ -189,14 +165,6 @@ export const authSlice = createSlice({
                 return {
                     ...state,
                     loginUser: action.payload,
-                }
-            }
-        );
-        builder.addCase(
-            fetchAsyncRegister.rejected,
-            (state) => {
-                return {
-                    ...state, error: { isError: true, message: "メールアドレスもしくはパスワードに誤りがあります。" }
                 }
             }
         );
@@ -245,16 +213,11 @@ export const authSlice = createSlice({
     },
 });
 
-export const { toggleMode, showError, toggleLoading, toggleProfileEdit, editProfile, editThumbnailImage } = authSlice.actions;
+export const { toggleProfileEdit, editProfile, editThumbnailImage } = authSlice.actions;
 
-export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 export const selectEditedProfile = (state: RootState) => state.auth.editedProfile;
-export const selectEditedProfileError = (state: RootState) => state.auth.editedProfileError;
 export const selectEditedThumbnailImage = (state: RootState) => state.auth.editedThumbnailImage;
-export const selectEditedThumbnailError = (state: RootState) => state.auth.editedThumbnailError;
-export const selectError = (state: RootState) => state.auth.error;
-export const selectIsLoading = (state: RootState) => state.auth.isLoading;
 export const selectIsProfileEdited = (state: RootState) => state.auth.isProfileEdited;
 
 export default authSlice.reducer;
