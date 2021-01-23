@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
@@ -17,10 +17,6 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import { AppDispatch } from "../../../app/store";
 import {
     fetchAsyncLogin,
-    selectError,
-    selectIsLoading,
-    showError,
-    toggleLoading
 } from "./authSlice";
 import commonStyles from "../../../assets/Style.module.css";
 
@@ -72,10 +68,12 @@ const SignIn: React.FC = () => {
     const classes = useStyles();
     const dispatch: AppDispatch = useDispatch();
 
-    const error = useSelector(selectError);
-    const isLoading = useSelector(selectIsLoading);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const [credential, setCredential] = useState({ email: "", password: "" });
+
+    const isDisabled = (credential.email.length === 0 || credential.password.length === 0)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -86,29 +84,28 @@ const SignIn: React.FC = () => {
     const signIn = async () => {
         // Validation
         if (credential.email === "" || credential.password === "") {
-            dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードが未入力です" }))
+            setError("メールアドレスまたはパスワードが未入力です");
             return false
         }
-        dispatch(toggleLoading());
+
+        setLoading(true);
         const result = await dispatch(fetchAsyncLogin(credential));;
-        // TODO: サーバーでのレスポンスエラー処理
         if (fetchAsyncLogin.rejected.match(result)) {
             console.log(result)
-            dispatch(toggleLoading());
-            dispatch(showError({ isError: true, message: "メールアドレスまたはパスワードに誤りがあります。" }))
+            setLoading(false);
+            setError("メールアドレスまたはパスワードに誤りがあります");
             return false
         }
         if (fetchAsyncLogin.fulfilled.match(result)) {
-            dispatch(toggleLoading());
+            setLoading(false);
             window.location.href = "/admin/dashboard";
         }
     };
 
-
     return (
         <Container maxWidth="sm">
             <Paper className={classes.paper}>
-                { isLoading && <CircularProgress /> }
+                { loading && <CircularProgress /> }
                 <Avatar variant="rounded" src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} className={classes.avatar} alt="logo" />
                 <Typography variant="h5" className={classes.title} >
                     ログイン
@@ -134,7 +131,7 @@ const SignIn: React.FC = () => {
                     value={credential.password}
                     onChange={handleInputChange}
                 />
-                { error.isError && (<span className={classes.spanError}> {error.message} </span>) }
+                { error.length !== 0 && (<span className={classes.spanError}> {error} </span>) }
                 <Button
                     variant="contained"
                     fullWidth
@@ -142,6 +139,7 @@ const SignIn: React.FC = () => {
                     color="primary"
                     className={classes.submit}
                     onClick={signIn}
+                    disabled={isDisabled}
                 >
                     ログイン
                 </Button>

@@ -26,7 +26,6 @@ import {
     selectVisitors
 } from './dashboardSlice';
 import { AppDispatch } from '../../../app/store';
-import commonStyles from '../../../assets/Style.module.css';
 import customStyles from './Dashboard.module.css';
 import { durationCategory } from '../../../app/constant';
 

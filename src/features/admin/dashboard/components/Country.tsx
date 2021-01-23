@@ -20,7 +20,7 @@ const Country: React.FC = () => {
 
     useEffect( () => {
         dispatch(displayCountryData(getCountryObj(country)));
-    }, [country])
+    }, [country, dispatch])
 
     const getCountryObj = (country: COUNTRY) => {
         let countryObj = {

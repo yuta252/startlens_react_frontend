@@ -75,15 +75,10 @@ export interface GEO_API_RESPONSE {
 }
 
 export interface AUTH_STATE {
-    error: ERROR;
-    isLoginView: boolean;
-    isLoading: boolean;
     isProfileEdited: boolean;
     loginUser: LOGIN_USER;
     editedProfile: POST_PROFILE;
-    editedProfileError: ERROR;
     editedThumbnailImage: THUMBNAIL_BASE64;
-    editedThumbnailError: ERROR;
 }
 
 /* profileSlice */

@@ -40,7 +40,7 @@ const Visitors: React.FC = () => {
                 dispatch(displayVisitorsData(getLastDate(7)));
                 break;
         }
-    }, [duration])
+    }, [duration, dispatch])
 
     const getFormattedDate = (date: Date) => {
         const month = ("0" + (date.getMonth() + 1)).slice(-2)

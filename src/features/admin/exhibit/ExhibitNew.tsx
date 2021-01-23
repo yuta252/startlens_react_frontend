@@ -6,6 +6,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
     Avatar,
     Button,
+    CircularProgress,
     Divider,
     FormControl,
     Grid,
@@ -75,7 +76,10 @@ const ExhibitNew: React.FC = () => {
     const history = useHistory();
     const dispatch: AppDispatch = useDispatch();
 
-    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [disabled, setDisabled] = useState(false);
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [message, setMessage] = useState<{type: "success" | "error", message: string}>({type: "success", message: ""});
     const [images, setImages] = useState<string[]>([]);
     const [inputPost, setInputPost] = useState({lang: "", name: "", description: ""})
 
@@ -83,6 +87,13 @@ const ExhibitNew: React.FC = () => {
 
     const isDisabled: boolean = (inputPost.lang.length === 0 || inputPost.name.length === 0 ||
                                 inputPost.description.length === 0 || images.length === 0);
+
+    const handleMessageClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackOpen(false);
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -100,13 +111,6 @@ const ExhibitNew: React.FC = () => {
             {langCategoryObj[key]}
         </MenuItem>
     ));
-
-    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false)
-    }
 
     const uploadPictureAction = () => {
         const fileInput = document.getElementById("exhibitImageInput")
@@ -142,8 +146,6 @@ const ExhibitNew: React.FC = () => {
                         width = Math.round(THUMBNAIL_HEIGHT * width / height );
                         height = THUMBNAIL_HEIGHT;
                     }
-                    console.log("hight: ", height)
-                    console.log("width: ", width)
                     let canvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
@@ -163,13 +165,22 @@ const ExhibitNew: React.FC = () => {
     }
 
     const createExhibitAction = async () => {
-        const postData: POST_EXHIBIT = {...inputPost, imageFile: images}
+        const postData: POST_EXHIBIT = {...inputPost, imageFile: images};
+        setLoading(true);
+        setDisabled(true);
         const result = await dispatch(fetchAsyncCreateExhibit(postData));
         if (fetchAsyncCreateExhibit.rejected.match(result)) {
-            setOpen(true);
+            setLoading(false);
+            setDisabled(false);
+            setMessage({type: "error", message: "投稿に失敗しました" });
+            setSnackOpen(true);
             return false
         }
         if (fetchAsyncCreateExhibit.fulfilled.match(result)) {
+            setLoading(false);
+            setDisabled(false);
+            setMessage({type: "success", message: "投稿に成功しました" });
+            setSnackOpen(true);
             handleLink('/admin/exhibit');
         }
     }
@@ -187,6 +198,11 @@ const ExhibitNew: React.FC = () => {
             <Grid container item>
                 <Grid item md={12}>
                     <Paper className={classes.paper}>
+                        {loading && (
+                            <div className={customStyles.thumbnail_loading}>
+                                <CircularProgress />
+                            </div>
+                        )}
                         <Grid container>
                             {images.length > 0 && (
                                 images.map( (image: string) => (
@@ -265,14 +281,14 @@ const ExhibitNew: React.FC = () => {
                                 onClick={
                                     () => createExhibitAction()
                                 }
-                                disabled={isDisabled}
+                                disabled={isDisabled || disabled}
                                 disableElevation
                             >
                                 保存
                             </Button>
-                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                <Alert onClose={handleClose} severity="error">
-                                    画像の投稿が失敗しました
+                            <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleMessageClose}>
+                                <Alert onClose={handleMessageClose} severity={message.type}>
+                                    {message.message}
                                 </Alert>
                             </Snackbar>
                         </div>

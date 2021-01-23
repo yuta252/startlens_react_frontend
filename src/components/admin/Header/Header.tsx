@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from "react-redux";
 
 import { makeStyles, Theme, withStyles } from '@material-ui/core/styles';
 import {
@@ -13,6 +14,10 @@ import {
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+
+import {
+    selectLoginUser,
+} from '../../../features/admin/auth/authSlice';
 
 
 const drawerWidth = 240;
@@ -85,8 +90,12 @@ const StyledMenu = withStyles({
 
 
 const Header: React.FC = () => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const classes = useStyles();
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const loginUser = useSelector(selectLoginUser);
+
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(e.currentTarget);
     };
@@ -116,7 +125,11 @@ const Header: React.FC = () => {
                         }}
                         variant="dot"
                     >
-                        <Avatar alt="user" src={`${process.env.PUBLIC_URL}/assets/meijijingu.png`} /> {" "}
+                        {loginUser.profile.thumbnail.url ? (
+                            <Avatar src={loginUser.profile.thumbnail.url} alt="thumbnail"/>
+                        ) : (
+                            <Avatar src={`${process.env.PUBLIC_URL}/assets/AppIcon_1024_1024.png`} alt="thumbnail"/>
+                        )}
                     </StyleBadge>
                 </Button>
                 <StyledMenu
@@ -130,9 +143,8 @@ const Header: React.FC = () => {
                         <ListItemIcon>
                             <ExitToAppIcon fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText primary="Logout" />
+                        <ListItemText primary="ログアウト" />
                     </MenuItem>
-
                 </StyledMenu>
             </Toolbar>
         </AppBar>

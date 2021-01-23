@@ -20,7 +20,7 @@ const Birth: React.FC = () => {
 
     useEffect( () => {
         dispatch(displayGenerationData(getGenerationObj(birth)));
-    }, [birth])
+    }, [birth, dispatch])
 
     const getGenerationObj = (birth: BIRTH) => {
         const currentYear = 2021;
