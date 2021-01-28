@@ -1,44 +1,40 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# Startlens
 
-## Available Scripts
+![startlens_admin_preview](https://user-images.githubusercontent.com/42575165/106089813-17e24880-616c-11eb-9222-f0310e935bbc.png)
+![startlens_admin_preview2](https://user-images.githubusercontent.com/42575165/106089818-1add3900-616c-11eb-912e-4be1362d164d.png)
+![startlens_admin_preview3](https://user-images.githubusercontent.com/42575165/106089822-1ca6fc80-616c-11eb-8a72-c499a738a3f0.png)
 
-In the project directory, you can run:
 
-### `yarn start`
+## サイト概要
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+観光事業者が観光地のスポットの写真や説明文を投稿できる管理者サイトです。またダッシュボードで閲覧されたユーザー数とその属性データを閲覧することができます。
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- [バックエンドAPIレポジトリ](https://github.com/yuta252/startlens_web_backend)
+- [ユーザー側フロントエンドレポジトリ](https://github.com/yuta252/startlens_frontend_user)
 
-### `yarn test`
+## 技術選定
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- React.js    v16.14.0
+- Redux       v7.2.2
+- TypeScript  v3.9.7
+- Chart.js    v2.9.4
 
-### `yarn build`
+## 機能
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Chart.jsによるデータビジュアライズ（今日、過去１週間、過去１ヶ月、過去1年の検索条件で切り替え可能）
+- FileAPIを利用した画像の複数枚アップロード
+- フロントエンドにおける画像のリサイズとBase64エンコーディング
+- 説明文の多言語投稿機能
+- GoogleMapAPIを利用した住所情報から位置情報（緯度・経度）の取得
+- JWTトークンによるユーザー認証
+- 投稿画像の一覧表示におけるページネーション
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## 外部API
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [バックエンドAPIサーバー](https://github.com/yuta252/startlens_web_backend)
 
-### `yarn eject`
+　事業者ごとに登録した画像や文章を管理処理するためのAPIサーバー
+ 
+- [Google Map API](https://cloud.google.com/maps-platform?hl=ja)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+　事業者が入力した住所情報から位置情報を取得するためのAPI
