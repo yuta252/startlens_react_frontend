@@ -79,15 +79,19 @@ const Exhibit: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const exhibits = useSelector(selectExhibits);
     const params = useSelector(selectParams);
+
     const [openConfirm, setOpenConfirm] = useState(false);
     const [page, setPage] = useState(1);
+    const [deleteId, setDeleteId] = useState(0);
 
-    const handleOpenConfirm = () => {
+    const handleOpenConfirm = (exhibitId: number) => {
         setOpenConfirm(true);
+        setDeleteId(exhibitId);
     }
 
     const handleCloseConfirm = () => {
         setOpenConfirm(false);
+        setDeleteId(0);
     }
 
     const displayExhibitAction = (exhibit: READ_EXHIBIT) => {
@@ -96,7 +100,8 @@ const Exhibit: React.FC = () => {
         handleLink('/admin/exhibit/detail');
     }
 
-    const deleteExhibitActin = async (exhibitId: number) => {
+    const deleteExhibitAction = async (exhibitId: number) => {
+        console.log("delete action exhibitId:", exhibitId)
         await dispatch(fetchAsyncDeleteExhibit(exhibitId))
         handleCloseConfirm()
     }
@@ -151,7 +156,7 @@ const Exhibit: React.FC = () => {
                                         </CardContent>
                                     </CardActionArea>
                                     <CardActions className={classes.cardButton}>
-                                        <Button size="small" color="primary" onClick={() => handleOpenConfirm()}>
+                                        <Button size="small" color="primary" onClick={() => handleOpenConfirm(exhibit.id)}>
                                             削除
                                         </Button>
                                     </CardActions>
@@ -172,7 +177,7 @@ const Exhibit: React.FC = () => {
                                     <Button onClick={handleCloseConfirm} color="primary">
                                         キャンセル
                                     </Button>
-                                    <Button onClick={() => deleteExhibitActin(exhibit.id)} color="primary" autoFocus>
+                                    <Button onClick={() => deleteExhibitAction(deleteId)} color="primary" autoFocus>
                                         削除
                                     </Button>
                                     </DialogActions>
