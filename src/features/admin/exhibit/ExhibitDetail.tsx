@@ -103,6 +103,7 @@ const ExhibitDetail: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [expanded, setExpanded] = React.useState<number | false>(false);
+    const [deleteExhibit, setDeleteExhibit] = useState({id: 0, exhibitId: 0, lang: "na", name: "", description: ""})
 
     const isDisabled: boolean = (editedMultiExhibit.lang.length === 0 || editedMultiExhibit.name.length === 0 ||
         editedMultiExhibit.description.length === 0);
@@ -143,12 +144,14 @@ const ExhibitDetail: React.FC = () => {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const handleOpenConfirm = () => {
+    const handleOpenConfirm = (multiExhibit: MULTI_EXHIBIT) => {
         setOpenConfirm(true);
+        setDeleteExhibit(multiExhibit);
     }
 
     const handleCloseConfirm = () => {
         setOpenConfirm(false);
+        setDeleteExhibit({id: 0, exhibitId: 0, lang: "na", name: "", description: ""});
     }
 
     const createMultiExhibitAction = async () => {
@@ -237,7 +240,7 @@ const ExhibitDetail: React.FC = () => {
                                             <EditIcon />
                                         </IconButton>
                                     </div>
-                                    <div onClick={() => handleOpenConfirm()}>
+                                    <div onClick={() => handleOpenConfirm(multiExhibit)}>
                                         <IconButton>
                                             <DeleteIcon />
                                         </IconButton>
@@ -259,7 +262,7 @@ const ExhibitDetail: React.FC = () => {
                                     <Button onClick={handleCloseConfirm} color="primary">
                                         キャンセル
                                     </Button>
-                                    <Button onClick={() => deleteMultiExhibitActin(multiExhibit)} color="primary" autoFocus>
+                                    <Button onClick={() => deleteMultiExhibitActin(deleteExhibit)} color="primary" autoFocus>
                                         削除
                                     </Button>
                                     </DialogActions>
