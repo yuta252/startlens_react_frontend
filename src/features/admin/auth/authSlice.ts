@@ -105,7 +105,6 @@ export const fetchAsyncGetGeocodingInfo = createAsyncThunk(
         const res = await axios.get<GEO_API_RESPONSE>(
             `${process.env.REACT_APP_GEOCODING_API_URL}address=${address}&key=${process.env.REACT_APP_GEOCODING_API_KEY}`,
         );
-        console.log(res.data)
         return res.data
     }
 );

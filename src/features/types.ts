@@ -179,6 +179,27 @@ export interface EXHIBIT_PAGINATE_INDEX {
     }
 }
 
+export interface TRANSLATION_REQ_PARAMS {
+    text: string;
+    target: string;
+}
+
+export interface TRANSLATION_PROFILE_PARAMS {
+    key: string;
+    text: string;
+    target: string;
+}
+
+export interface TRANSLATION_TEXT {
+    translatedText: string;
+}
+
+export interface TRANSLATION_RESPONSE {
+    data: {
+        translations: TRANSLATION_TEXT[]
+    }
+}
+
 /* dashboard.ts */
 export interface VISITORS {
     [key: string]: number;

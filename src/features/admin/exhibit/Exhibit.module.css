@@ -39,3 +39,9 @@
     justify-content: center;
     margin: 8px 0;
 }
+
+.exhibit_edit_translation_wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}

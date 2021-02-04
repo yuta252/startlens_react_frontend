@@ -10,6 +10,8 @@ import {
     POST_PICTURE,
     READ_EXHIBIT,
     READ_PICTURE,
+    TRANSLATION_REQ_PARAMS,
+    TRANSLATION_RESPONSE
 } from "../../types";
 
 
@@ -128,6 +130,17 @@ export const fetchAsyncDeleteMultiExhibit = createAsyncThunk(
         return exhibit;
     }
 );
+
+export const fetchAsyncGetTranslation = createAsyncThunk(
+    "exhibit/getTranslation",
+    async (params: TRANSLATION_REQ_PARAMS) => {
+        const res = await axios.get<TRANSLATION_RESPONSE>(
+            `${process.env.REACT_APP_TRANSLATION_API_URL}?key=${process.env.REACT_APP_TRANSLATION_API_KEY}&source=ja&target=${params.target}&q=${params.text}`,
+        );
+        console.log(res.data)
+        return res.data
+    }
+)
 
 export const initialState: EXHIBIT_STATE = {
     error: {
