@@ -5,7 +5,9 @@ import { RootState } from '../../../app/store';
 import {
     POST_MULTI_PROFILE,
     PROFILE_STATE,
-    READ_MULTI_PROFILE
+    READ_MULTI_PROFILE,
+    TRANSLATION_PROFILE_PARAMS,
+    TRANSLATION_RESPONSE,
 } from "../../types";
 
 
@@ -29,7 +31,6 @@ export const fetchAsyncCreateMultiProfile = createAsyncThunk(
     async (multiProfile: POST_MULTI_PROFILE) => {
         // remove id property to prevent dupulicate registration
         const {id, ...multiProfileSent} = multiProfile
-        console.log("multiProfile sent: ", multiProfileSent)
         const res = await axios.post<READ_MULTI_PROFILE>(
             `${process.env.REACT_APP_API_URL}/api/v1/multi_profiles`,
             { "multi_profile": multiProfileSent },
@@ -76,6 +77,16 @@ export const fetchAsyncDeleteMultiProfile = createAsyncThunk(
     }
 );
 
+export const fetchAsyncGetTranslation = createAsyncThunk(
+    "profile/getTranslation",
+    async (params: TRANSLATION_PROFILE_PARAMS) => {
+        const res = await axios.get<TRANSLATION_RESPONSE>(
+            `${process.env.REACT_APP_TRANSLATION_API_URL}?key=${process.env.REACT_APP_TRANSLATION_API_KEY}&source=ja&target=${params.target}&q=${params.text}`,
+        );
+        const result = {key: params.key, text: res.data.data.translations[0].translatedText}
+        return result
+    }
+)
 
 export const initialState: PROFILE_STATE = {
     error: {

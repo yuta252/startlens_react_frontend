@@ -46,6 +46,12 @@
     font-size: 16px;
 }
 
+.multi_profile_edit_translation_wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
 .multi_profile_icon {
     background-color: transparent;
     border: none;

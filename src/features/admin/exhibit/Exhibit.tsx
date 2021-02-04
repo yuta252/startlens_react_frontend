@@ -148,10 +148,10 @@ const Exhibit: React.FC = () => {
                                         />
                                         <CardContent>
                                             <Typography gutterBottom variant="subtitle1" component="h2" noWrap={true}>
-                                                {exhibit.multiExhibits[0].name}
+                                                {exhibit.multiExhibits[0]?.name ? exhibit.multiExhibits[0].name : "未登録"}
                                             </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p" noWrap={true}>
-                                                {exhibit.multiExhibits[0].description}
+                                                {exhibit.multiExhibits[0]?.description ? exhibit.multiExhibits[0].description : "未登録"}
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>

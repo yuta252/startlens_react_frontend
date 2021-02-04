@@ -33,6 +33,7 @@ import {
     editMultiExhibit,
     fetchAsyncCreateMultiExhibit,
     fetchAsyncDeleteMultiExhibit,
+    fetchAsyncGetTranslation,
     fetchAsyncUpdateMultiExhibit,
     initialState,
     selectEditedMultiExhibit,
@@ -44,7 +45,10 @@ import PictureDisplay from './PictureDisplay';
 import PictureEdit from './PictureEdit';
 import customStyles from './Exhibit.module.css';
 import commonStyles from '../../../assets/Style.module.css';
-import { MULTI_EXHIBIT } from '../../types';
+import {
+    MULTI_EXHIBIT,
+    TRANSLATION_REQ_PARAMS
+} from '../../types';
 import { langCategoryObj } from '../../../app/constant';
 
 
@@ -88,6 +92,16 @@ const useStyles = makeStyles( (theme: Theme) => ({
     formControl: {
         minWidth: "180px",
     },
+    spanError: {
+        display: "flex",
+        justifyContent: "flex-start",
+        color: "#d8135b",
+        marginTop: 10,
+        fontSize: "14px"
+    },
+    translationButton: {
+        marginLeft: theme.spacing(2)
+    }
 }));
 
 
@@ -104,6 +118,7 @@ const ExhibitDetail: React.FC = () => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [expanded, setExpanded] = React.useState<number | false>(false);
     const [deleteExhibit, setDeleteExhibit] = useState({id: 0, exhibitId: 0, lang: "na", name: "", description: ""})
+    const [translationError, setTranslationError] = useState("");
 
     const isDisabled: boolean = (editedMultiExhibit.lang.length === 0 || editedMultiExhibit.name.length === 0 ||
         editedMultiExhibit.description.length === 0);
@@ -177,9 +192,40 @@ const ExhibitDetail: React.FC = () => {
         }
     }
 
-    const deleteMultiExhibitActin = async (multiExhibit: MULTI_EXHIBIT) => {
+    const deleteMultiExhibitAction = async (multiExhibit: MULTI_EXHIBIT) => {
         await dispatch(fetchAsyncDeleteMultiExhibit(multiExhibit))
         handleCloseConfirm()
+    }
+
+    const getTranslationAction = async () => {
+        // translate description from ja to target language
+        const targetText = selectedMultiExhibit.filter( (multiExhibit) => (
+            multiExhibit.lang === 'ja'
+        ))
+        if (targetText[0] && editedMultiExhibit.lang !== 'ja'){
+            const translationDescriptionParams: TRANSLATION_REQ_PARAMS = {target: editedMultiExhibit.lang, text: targetText[0].description}
+            const translationNameParams: TRANSLATION_REQ_PARAMS = {target: editedMultiExhibit.lang, text: targetText[0].name}
+            const resultDescription = await dispatch(fetchAsyncGetTranslation(translationDescriptionParams));
+            const resultName = await dispatch(fetchAsyncGetTranslation(translationNameParams));
+
+            if (fetchAsyncGetTranslation.rejected.match(resultDescription) || fetchAsyncGetTranslation.rejected.match(resultName)) {
+                setTranslationError("翻訳に失敗しました。");
+                return false
+            }
+            if (fetchAsyncGetTranslation.fulfilled.match(resultDescription) && fetchAsyncGetTranslation.fulfilled.match(resultName)) {
+                setTranslationError("");
+                const translatedDescriptionText = resultDescription.payload.data.translations[0].translatedText;
+                const translatedNameText = resultName.payload.data.translations[0].translatedText;
+
+                if (translatedDescriptionText && translatedNameText) {
+                    dispatch(editMultiExhibit({...editedMultiExhibit, description: translatedDescriptionText, name: translatedNameText}))
+                } else {
+                    setTranslationError("翻訳情報がありません。");
+                }
+            }
+        } else {
+            setTranslationError("翻訳対象となる言語が指定されていないか、翻訳される日本語の説明文が登録されていません。");
+        }
     }
 
     return (
@@ -187,7 +233,7 @@ const ExhibitDetail: React.FC = () => {
             <Grid container item>
                 <Grid item md={12}>
                     <div>
-                        <Typography variant="h6">{selectedMultiExhibit[0]!.name}</Typography>
+                        <Typography variant="h6">{selectedMultiExhibit[0]?.name ? selectedMultiExhibit[0].name : "未登録"}</Typography>
                     </div>
                     <Divider className={classes.divider}/>
                 </Grid>
@@ -262,7 +308,7 @@ const ExhibitDetail: React.FC = () => {
                                     <Button onClick={handleCloseConfirm} color="primary">
                                         キャンセル
                                     </Button>
-                                    <Button onClick={() => deleteMultiExhibitActin(deleteExhibit)} color="primary" autoFocus>
+                                    <Button onClick={() => deleteMultiExhibitAction(deleteExhibit)} color="primary" autoFocus>
                                         削除
                                     </Button>
                                     </DialogActions>
@@ -276,17 +322,25 @@ const ExhibitDetail: React.FC = () => {
                                     登録したい言語を選択し入力してくだいさい。
                                 </DialogContentText>
                                 <div className={commonStyles.spacer__medium} />
-                                <FormControl className={classes.formControl}>
-                                    <InputLabel id="category-select-label">カテゴリー名</InputLabel>
-                                    <Select
-                                        labelId="category-select-label"
-                                        name="lang"
-                                        value={editedMultiExhibit.lang}
-                                        onChange={handleSelectLangChange}
-                                    >
-                                        {langOptions}
-                                    </Select>
-                                </FormControl>
+                                <div className={customStyles.exhibit_edit_translation_wrapper}>
+                                    <FormControl className={classes.formControl}>
+                                        <InputLabel id="category-select-label">カテゴリー名</InputLabel>
+                                        <Select
+                                            labelId="category-select-label"
+                                            name="lang"
+                                            value={editedMultiExhibit.lang}
+                                            onChange={handleSelectLangChange}
+                                        >
+                                            {langOptions}
+                                        </Select>
+                                    </FormControl>
+                                    <Button onClick={getTranslationAction} color="primary" className={classes.translationButton}>
+                                        翻訳
+                                    </Button>
+                                </div>
+                                {translationError.length !== 0 &&
+                                    (<span className={classes.spanError}> {translationError} </span>)
+                                }
                                 <div className={commonStyles.spacer__medium} />
                                 <TextField
                                     variant="outlined"
